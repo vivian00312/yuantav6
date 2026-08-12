@@ -1,0 +1,2541 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="元大福祉探索家" />
+  <title>元大福祉探索家｜陪伴你的每個重要生活時刻</title>
+  <style>
+    :root {
+      --bg-cream: #FFF5F8;
+      --bg-gradient: linear-gradient(160deg, #FFF0F5 0%, #FFF5F8 50%, #FFE8F0 100%);
+      --blue-soft: #4E89AE;
+      --blue-main: #2B6CB0;
+      --blue-dark: #1A365D;
+      --bubble-bg: rgba(255, 255, 255, 0.94);
+      --bubble-hover: rgba(255, 250, 252, 0.98);
+      --text-main: #2D3748;
+      --text-muted: #718096;
+      --accent-warm: #E65C7B;
+      --accent-peach: #F6AD55;
+      --accent-teal: #2A9D8F;
+      --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+      --shadow-bubble: 0 12px 30px rgba(230, 92, 123, 0.08);
+      --shadow-hover: 0 18px 36px rgba(230, 92, 123, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    body {
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+      color: var(--text-main);
+      background: var(--bg-cream);
+      background-image: var(--bg-gradient);
+      -webkit-tap-highlight-color: transparent;
+    }
+    button {
+      font: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    button:focus-visible {
+      outline: 3px solid rgba(230, 92, 123, 0.4);
+      outline-offset: 4px;
+    }
+    [hidden] {
+      display: none !important;
+    }
+
+    .app {
+      position: relative;
+      min-height: 100vh;
+      isolation: isolate;
+    }
+    
+    .screen {
+      display: none;
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding-bottom: 70px;
+      z-index: 10;
+    }
+    .screen.active {
+      display: block;
+      animation: screenInSoft 0.6s ease-out;
+    }
+    @keyframes screenInSoft {
+      0% {
+        opacity: 0.3;
+        transform: translateY(12px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .paper-texture {
+      position: fixed;
+      inset: 0;
+      z-index: 0 !important;
+      pointer-events: none !important;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+    
+    .floating-hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 0 !important;
+      overflow: hidden;
+    }
+    .heart-particle {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      animation: heartFloatUp 20s infinite linear;
+      opacity: 0;
+    }
+    .heart-particle:nth-child(odd) {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%23FF8A9E' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    }
+    .heart-particle:nth-child(even) {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='%23FFB37C' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+    }
+    .heart-particle:nth-child(1) { left: 7%; bottom: -50px; width: 22px; height: 22px; animation-duration: 16s; animation-delay: 0s; }
+    .heart-particle:nth-child(2) { left: 88%; bottom: -50px; width: 28px; height: 28px; animation-duration: 21s; animation-delay: 2s; }
+    .heart-particle:nth-child(3) { left: 16%; bottom: -50px; width: 34px; height: 34px; animation-duration: 25s; animation-delay: 5s; }
+    .heart-particle:nth-child(4) { left: 78%; bottom: -50px; width: 20px; height: 20px; animation-duration: 18s; animation-delay: 1s; }
+    .heart-particle:nth-child(5) { left: 35%; bottom: -50px; width: 26px; height: 26px; animation-duration: 22s; animation-delay: 8s; }
+    .heart-particle:nth-child(6) { left: 65%; bottom: -50px; width: 30px; height: 30px; animation-duration: 19s; animation-delay: 4s; }
+    .heart-particle:nth-child(7) { left: 48%; bottom: -50px; width: 18px; height: 18px; animation-duration: 24s; animation-delay: 11s; }
+    .heart-particle:nth-child(8) { left: 92%; bottom: -50px; width: 24px; height: 24px; animation-duration: 17s; animation-delay: 7s; }
+
+    @keyframes heartFloatUp {
+      0% {
+        transform: translateY(0) translateX(0) scale(0.8) rotate(-10deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.65;
+      }
+      80% {
+        opacity: 0.65;
+      }
+      100% {
+        transform: translateY(-108vh) translateX(35px) scale(1.15) rotate(15deg);
+        opacity: 0;
+      }
+    }
+
+    .heart-shower-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 180 !important;
+      overflow: hidden;
+    }
+    .shower-heart {
+      position: absolute;
+      bottom: -60px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      will-change: transform, opacity;
+      animation: heartShowerUp ease-out forwards;
+    }
+    @keyframes heartShowerUp {
+      0% {
+        transform: translateY(0) scale(0.5) rotate(0deg);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.95;
+        transform: translateY(-15vh) scale(1.1) rotate(-15deg);
+      }
+      85% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.3) rotate(25deg);
+        opacity: 0;
+      }
+    }
+
+    .bgm-toggle-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 170;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(230, 92, 123, 0.35);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--accent-warm);
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 8px 20px rgba(230, 92, 123, 0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s var(--ease-soft);
+    }
+    .bgm-toggle-btn:hover {
+      background: var(--accent-warm);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(230, 92, 123, 0.28);
+    }
+    .bgm-toggle-btn.muted {
+      border-color: rgba(113, 128, 150, 0.3);
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 100;
+      top: max(14px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 1120px);
+      height: 58px;
+      padding: 0 12px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(230, 92, 123, 0.08);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background: radial-gradient(circle at 35% 35%, #fff, #E65C7B);
+      border: 2px solid #fff;
+      box-shadow: 0 4px 12px rgba(230, 92, 123, 0.2);
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 800;
+      animation: starRotate 7s infinite ease-in-out alternate;
+    }
+    @keyframes starRotate {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      100% {
+        transform: rotate(18deg) scale(1.06);
+      }
+    }
+    .brand strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.1;
+      font-weight: 700;
+      color: var(--blue-dark);
+    }
+    .brand span {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .topbar-search {
+      flex: 1;
+      max-width: 380px;
+      margin: 0 auto;
+      position: relative;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .search-input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+    .search-input {
+      width: 100%;
+      height: 38px;
+      padding: 0 38px 0 16px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(230, 92, 123, 0.28);
+      background: rgba(255, 255, 255, 0.98);
+      font-size: 13.5px;
+      color: var(--blue-dark);
+      font-family: inherit;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(43, 108, 176, 0.03);
+      transition: all 0.35s var(--ease-soft);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-warm);
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(230, 92, 123, 0.16);
+    }
+    .search-input::placeholder {
+      color: #90a6b8;
+      font-weight: 500;
+    }
+    .search-btn-action {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent-warm);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .search-btn-action:hover {
+      background: #DF4B6D;
+      transform: translateY(-50%) scale(1.06);
+    }
+    .search-exit-btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(230, 92, 123, 0.3);
+      background: #fff;
+      color: var(--accent-warm);
+      font-weight: 700;
+      font-size: 12.5px;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(230, 92, 123, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .search-exit-btn:hover {
+      background: var(--accent-warm);
+      color: #fff;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+    .top-btn {
+      height: 38px;
+      padding: 0 16px;
+      border: 1px solid rgba(230, 92, 123, 0.25);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--accent-warm);
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.4s var(--ease-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .top-btn:hover {
+      background: var(--accent-warm);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(230, 92, 123, 0.2);
+    }
+    .top-btn[disabled] {
+      opacity: 0.4;
+      pointer-events: none;
+      border-color: transparent;
+      color: var(--text-muted);
+    }
+
+    .search-results-wrapper {
+      position: relative;
+      z-index: 50;
+      width: min(calc(100% - 30px), 760px);
+      margin: 95px auto 40px;
+    }
+    .search-results-box {
+      width: 100%;
+      text-align: left;
+    }
+    .search-no-result {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      border: 2px solid rgba(230, 92, 123, 0.2);
+      box-shadow: var(--shadow-bubble);
+    }
+    
+    .search-suggestion-list {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 24px;
+      border: 2px solid rgba(230, 92, 123, 0.2);
+      box-shadow: var(--shadow-bubble);
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .search-suggestion-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(82, 138, 180, 0.1);
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border-radius: 14px;
+    }
+    .search-suggestion-item:last-child {
+      border-bottom: none;
+    }
+    .search-suggestion-item:hover {
+      background: var(--bubble-hover);
+    }
+    .search-suggestion-title {
+      font-weight: 700;
+      color: var(--blue-dark);
+      font-size: 15px;
+    }
+    .search-suggestion-tag {
+      font-size: 12px;
+      color: #fff;
+      background: var(--accent-warm);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-weight: 700;
+    }
+
+    .cover-inner {
+      position: relative;
+      z-index: 20;
+      min-height: 100vh;
+      width: min(calc(100% - 34px), 840px);
+      margin: auto;
+      padding: 110px 0 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .cover-content {
+      width: 100%;
+      max-width: 780px;
+      position: relative;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cover-kicker {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #fff;
+      background: linear-gradient(90deg, var(--accent-warm), var(--accent-teal));
+      padding: 6px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 18px rgba(42, 157, 143, 0.15);
+      animation: kickerPulse 4s infinite ease-in-out;
+    }
+    @keyframes kickerPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.04);
+      }
+    }
+    .cover h1 {
+      margin: 0 auto 20px auto !important;
+      width: 100% !important;
+      font-size: clamp(32px, 5vw, 50px);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      font-weight: 800;
+      color: var(--blue-dark);
+      text-align: center !important;
+      display: block !important;
+      word-break: keep-all;
+      text-wrap: balance;
+    }
+    .cover h1 em {
+      font-style: normal;
+      color: var(--accent-warm);
+      position: relative;
+      display: inline-block;
+    }
+    .cover h1 em::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 4px;
+      height: 12px;
+      background: rgba(230, 92, 123, 0.2);
+      z-index: -1;
+      border-radius: 4px;
+    }
+    .cover p {
+      max-width: 640px;
+      margin: 0 auto auto auto !important;
+      color: var(--text-main);
+      font-size: 16px;
+      line-height: 1.85;
+      text-align: center !important;
+      display: block !important;
+      word-break: keep-all;
+      text-wrap: balance;
+    }
+
+    .art-illustration-box {
+      width: 260px;
+      height: 180px;
+      margin: 24px auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .heart-hug-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .hug-left {
+      transform-origin: 85px 80px;
+      animation: hugLeft 3.2s var(--ease-soft) infinite alternate;
+    }
+    @keyframes hugLeft {
+      0% {
+        transform: translate(-30px, 4px) rotate(-12deg) scale(0.9);
+        opacity: 0.85;
+      }
+      20% {
+        transform: translate(-4px, -2px) rotate(-4deg) scale(1);
+        opacity: 1;
+      }
+      60%, 100% {
+        transform: translate(12px, 3px) rotate(14deg) scale(1.06);
+        opacity: 1;
+      }
+    }
+    .hug-right {
+      transform-origin: 135px 80px;
+      animation: hugRight 3.2s var(--ease-soft) infinite alternate;
+    }
+    @keyframes hugRight {
+      0% {
+        transform: translate(30px, 4px) rotate(12deg) scale(0.9);
+        opacity: 0.85;
+      }
+      20% {
+        transform: translate(4px, -2px) rotate(4deg) scale(1);
+        opacity: 1;
+      }
+      60%, 100% {
+        transform: translate(-12px, 3px) rotate(-14deg) scale(1.06);
+        opacity: 1;
+      }
+    }
+    .hug-sparks {
+      transform-origin: 110px 75px;
+      animation: sparkPop 3.2s infinite alternate;
+    }
+    @keyframes sparkPop {
+      0%, 45% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      62% {
+        transform: scale(1.25);
+        opacity: 1;
+      }
+      85%, 100% {
+        transform: scale(1);
+        opacity: 0.85;
+      }
+    }
+    
+    .primary-btn {
+      position: relative;
+      z-index: 9999 !important;
+      min-height: 56px;
+      padding: 0 42px;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #E65C7B, #F6AD55);
+      color: #fff;
+      font-weight: 800;
+      font-size: 17px;
+      box-shadow: 0 12px 30px rgba(230, 92, 123, 0.28);
+      transition: all 0.45s var(--ease-soft);
+      cursor: pointer;
+      animation: btnBounce 3.6s infinite ease-in-out;
+    }
+    @keyframes btnBounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 36px rgba(230, 92, 123, 0.38);
+      }
+    }
+    .primary-btn:hover {
+      transform: translateY(-4px) scale(1.03);
+      background: linear-gradient(135deg, #DF4B6D, #EE9A3C);
+      box-shadow: 0 18px 42px rgba(230, 92, 123, 0.42);
+    }
+    .cover-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .moment-head {
+      padding-top: 80px !important;
+      width: min(calc(100% - 36px), 880px);
+      margin: 0 auto 0px auto;
+      text-align: center;
+    }
+    .moment-head h2 {
+      margin: 0 auto;
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--blue-dark);
+      word-break: keep-all;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .moment-stage {
+      width: min(100%, 780px);
+      height: 600px;
+      margin: 10px auto 30px !important;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    
+    .stage-center-heart-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 210px;
+      height: 210px;
+      z-index: 25;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 8px 20px rgba(230, 92, 123, 0.14));
+    }
+    .clickable-center-heart {
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform 0.2s ease;
+    }
+    .clickable-center-heart:hover {
+      transform: scale(1.1);
+    }
+    .stage-center-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .rotating-text-group {
+      transform-origin: 100px 100px;
+      animation: spinCenterText 28s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes spinCenterText {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .center-heart-pulse {
+      transform-origin: 100px 100px;
+      animation: heartPulseSoft 3.2s infinite ease-in-out alternate;
+    }
+    @keyframes heartPulseSoft {
+      0% { transform: scale(0.92); }
+      100% { transform: scale(1.06); }
+    }
+
+    .ring-node {
+      position: absolute;
+      width: 150px !important;
+      height: 150px !important;
+      z-index: 15;
+      cursor: pointer;
+      will-change: transform, opacity;
+      animation: galaxyOrbitInSoft 1.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(0.18s * var(--idx, 0));
+    }
+    @keyframes galaxyOrbitInSoft {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.3) rotate(-20deg);
+        filter: blur(4px);
+      }
+      70% {
+        opacity: 1;
+        transform: translate3d(calc(var(--x) * 1.03), calc(var(--y) * 1.03), 0) scale(1.02) rotate(3deg);
+        filter: blur(0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(var(--x), var(--y), 0) scale(1) rotate(0deg);
+        filter: blur(0);
+      }
+    }
+    
+    .ring-node-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--node-bg, #fff);
+      border: 4px solid #fff;
+      box-shadow: 0 10px 28px rgba(26, 54, 93, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .ring-node:hover .ring-node-inner {
+      transform: scale(1.12) translateY(-4px);
+      border-color: var(--accent-warm);
+      box-shadow: 0 16px 36px rgba(230, 92, 123, 0.28);
+    }
+    .ring-node:hover {
+      z-index: 35;
+    }
+
+    .ring-art-box {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+    }
+    .ring-art-box svg,
+    .ring-art-box video,
+    .ring-art-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .ring-label-badge {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.96);
+      border: 2px solid var(--accent-warm);
+      padding: 3px 14px;
+      border-radius: 99px;
+      box-shadow: 0 4px 10px rgba(230, 92, 123, 0.18);
+      white-space: nowrap;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.35s ease;
+    }
+    .ring-node:hover .ring-label-badge {
+      transform: translateX(-50%) translateY(-5px) scale(1.06);
+      border-color: #DF4B6D;
+    }
+    .ring-node-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--blue-dark);
+    }
+
+    .category-shell {
+      width: min(calc(100% - 32px), 920px);
+      margin: auto;
+      padding: 105px 0 60px;
+      text-align: center;
+    }
+    .category-kicker {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .category-shell h2 {
+      margin: 0 auto 36px auto;
+      font-size: clamp(24px, 4vw, 36px);
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--blue-dark);
+      word-break: keep-all;
+    }
+
+    .category-circle-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 36px;
+      margin-top: 15px;
+    }
+
+    .category-circle-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      cursor: pointer;
+      width: clamp(165px, 23vw, 195px);
+    }
+    .category-circle-media {
+      width: 100%;
+      height: clamp(165px, 23vw, 195px);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: 4px solid #fff;
+      box-shadow: 0 14px 32px rgba(230, 92, 123, 0.12);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s var(--ease-soft);
+    }
+    .category-circle-card:hover .category-circle-media {
+      transform: scale(1.08) translateY(-6px);
+      border-color: var(--accent-warm);
+      box-shadow: 0 20px 42px rgba(230, 92, 123, 0.26);
+    }
+    .category-circle-media video,
+    .category-circle-media img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+    .category-circle-media img {
+      z-index: 1;
+    }
+    .category-circle-media video {
+      z-index: 2;
+    }
+    .category-circle-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--blue-dark);
+      line-height: 1.25;
+      margin-top: 4px;
+      transition: color 0.3s ease;
+    }
+    .category-circle-card:hover .category-circle-title {
+      color: var(--accent-warm);
+    }
+    .category-circle-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-warm);
+      background: #FFF0F4;
+      border: 1.5px solid rgba(230, 92, 123, 0.3);
+      padding: 4px 14px;
+      border-radius: 99px;
+      transition: all 0.3s ease;
+    }
+    .category-circle-card:hover .category-circle-badge {
+      background: var(--accent-warm);
+      color: #fff;
+    }
+
+    .result-inner {
+      width: min(calc(100% - 30px), 880px);
+      margin: auto;
+      padding: 100px 0 60px;
+    }
+    .result-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .result-kicker {
+      color: var(--accent-warm);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+    }
+    .result h2 {
+      margin: 8px auto 12px;
+      max-width: 780px;
+      color: var(--blue-dark);
+      font-size: clamp(26px, 4.2vw, 38px);
+      line-height: 1.35;
+      font-weight: 800;
+      word-break: keep-all;
+      text-align: center;
+      text-wrap: balance;
+    }
+    .result-desc {
+      max-width: 100%;
+      margin: auto;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.8;
+      text-align: center;
+      white-space: normal;
+      overflow-x: auto;
+    }
+    
+    .newbie-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0 26px 0;
+    }
+    .newbie-tab {
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(230, 92, 123, 0.25);
+      background: #fff;
+      color: var(--text-main);
+      transition: all 0.35s var(--ease-soft);
+    }
+    .newbie-tab:hover {
+      background: var(--bubble-hover);
+    }
+    .newbie-tab.active {
+      background: var(--accent-warm);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 16px rgba(230, 92, 123, 0.25);
+    }
+
+    .group-section-title {
+      font-size: 18px;
+      color: var(--blue-dark);
+      font-weight: 800;
+      margin: 38px 0 15px;
+      border-left: 5px solid var(--accent-warm);
+      padding-left: 14px;
+      display: block;
+    }
+
+    .resource-list {
+      display: grid;
+      gap: 16px;
+    }
+    .resource {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.95);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow-bubble);
+      transition: all 0.4s var(--ease-soft);
+    }
+    .resource:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      background: #fff;
+      border-color: var(--accent-warm);
+    }
+    .resource-no {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #FFF0F3);
+      color: var(--accent-warm);
+      font-weight: 800;
+      font-size: 15px;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 10px rgba(230, 92, 123, 0.12);
+    }
+    .resource-tag {
+      font-size: 12px;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      background: var(--accent-warm);
+      padding: 4px 12px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .resource h3 {
+      margin: 0 0 6px;
+      color: var(--blue-dark);
+      font-size: 19px;
+      font-weight: 800;
+    }
+    .resource p {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    
+    .resource button {
+      min-height: 42px;
+      padding: 0 20px;
+      border: 1px solid rgba(230, 92, 123, 0.3);
+      border-radius: 14px;
+      color: var(--accent-warm);
+      background: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.35s var(--ease-soft);
+      box-shadow: 0 4px 12px rgba(230, 92, 123, 0.08);
+    }
+    .resource button:hover {
+      background: var(--accent-warm);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(230, 92, 123, 0.25);
+    }
+
+    .salary-note {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #1A365D;
+      font-weight: 700;
+      background: #EBF8FF;
+      padding: 3px 12px;
+      border-radius: 8px;
+      border: 1px solid #BEE3F8;
+    }
+
+    .hr-support-card {
+      margin-top: 32px;
+      padding: 22px 26px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(254, 245, 247, 0.95));
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: var(--shadow-bubble);
+    }
+    .hr-support-text h4 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--blue-dark);
+      font-weight: 800;
+    }
+    .hr-support-text p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .hr-support-btn {
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: var(--accent-warm);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: all 0.35s var(--ease-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 6px 16px rgba(230, 92, 123, 0.25);
+    }
+    .hr-support-btn:hover {
+      transform: translateY(-2px);
+      background: #DF4B6D;
+      box-shadow: 0 10px 22px rgba(230, 92, 123, 0.35);
+    }
+
+    .result-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+    .secondary-btn {
+      min-height: 48px;
+      padding: 0 26px;
+      border: 1px solid rgba(230, 92, 123, 0.3);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--accent-warm);
+      font-weight: 700;
+      font-size: 15px;
+      transition: all 0.35s var(--ease-soft);
+      box-shadow: 0 6px 16px rgba(230, 92, 123, 0.08);
+    }
+    .secondary-btn:hover {
+      background: var(--accent-warm);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(230, 92, 123, 0.2);
+    }
+    .disclaimer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 190;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(26, 54, 93, 0.55);
+      backdrop-filter: blur(10px);
+    }
+    .modal-backdrop.open {
+      display: grid;
+      animation: screenInSoft 0.3s var(--ease-soft) both;
+    }
+    .modal {
+      width: min(640px, 100%);
+      padding: 38px;
+      border-radius: 30px;
+      background: #fff;
+      box-shadow: 0 25px 80px rgba(26, 54, 93, 0.25);
+    }
+    .modal h3 {
+      margin: 0 0 12px;
+      color: var(--blue-dark);
+      font-size: 26px;
+      font-weight: 800;
+    }
+    .modal p {
+      color: var(--text-main);
+      font-size: 18px;
+      line-height: 1.8;
+      margin: 0 0 20px;
+    }
+    .modal-note {
+      padding: 18px 22px;
+      border-radius: 16px;
+      background: #FFF5F7;
+      color: var(--accent-warm);
+      font-size: 16px;
+      line-height: 1.85;
+      font-weight: 700;
+    }
+    .modal-actions {
+      text-align: right;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        height: 52px;
+        padding: 0 8px 0 12px;
+        gap: 6px;
+      }
+      .brand span {
+        display: none;
+      }
+      .topbar-search {
+        margin: 0 4px;
+        max-width: 210px;
+      }
+      .search-input {
+        height: 34px;
+        font-size: 13px;
+        padding: 0 30px 0 12px;
+      }
+      .search-btn-action {
+        width: 26px;
+        height: 26px;
+      }
+      .cover-inner {
+        padding-top: 100px;
+      }
+      .moment-head {
+        padding-top: 70px !important;
+      }
+      /* 優化手機閱覽模式：階段介面水平與垂直置中 */
+      .moment-stage {
+        height: auto;
+        min-height: 380px;
+        aspect-ratio: 1 / 1;
+        width: 100%;
+        max-width: 380px;
+        margin: 20px auto 30px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ring-node {
+        width: 110px !important;
+        height: 110px !important;
+      }
+      .ring-node-title {
+        font-size: 11px;
+      }
+      .ring-label-badge {
+        top: -14px;
+        padding: 2px 10px;
+      }
+      .stage-center-heart-wrap {
+        width: 150px;
+        height: 150px;
+      }
+      .category-shell {
+        padding-top: 90px;
+      }
+      
+      /* 優化手機閱覽模式：福利介面的圓圈一排一個 */
+      .category-circle-grid {
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+      }
+      .category-circle-card {
+        width: 100%;
+        max-width: 220px;
+      }
+      .category-circle-media {
+        width: 180px;
+        height: 180px;
+      }
+      .category-circle-title {
+        font-size: 18px;
+      }
+      
+      .resource {
+        grid-template-columns: 46px 1fr;
+        gap: 14px;
+        padding: 20px;
+      }
+      .resource button {
+        grid-column: 1 / -1;
+      }
+      .hr-support-card {
+        text-align: center;
+        justify-content: center;
+        padding: 18px;
+      }
+      .bgm-toggle-btn {
+        right: 12px;
+        bottom: 12px;
+        height: 36px;
+        padding: 0 12px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="paper-texture" aria-hidden="true"></div>
+  <div class="floating-hearts" aria-hidden="true">
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+    <div class="heart-particle"></div>
+  </div>
+
+  <div class="heart-shower-container" id="heartShowerContainer" aria-hidden="true"></div>
+
+  <!-- ★ 右下角「背景音樂 BGM」全域靜音開關 -->
+  <button class="bgm-toggle-btn" id="bgmToggleBtn" type="button" aria-label="切換背景音樂" title="切換背景音樂">🎵 靜音</button>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">✦</div>
+      <div><strong>元大福祉探索家</strong></div>
+    </div>
+
+    <div class="topbar-search" id="topbarSearch" style="display: none;">
+      <div class="search-input-wrapper">
+        <input type="text" class="search-input" id="searchInput" placeholder="輸入關鍵字（如：健檢、津貼、保險）..." />
+        <button class="search-btn-action" id="searchSubmitBtn" type="button" aria-label="執行搜尋">🔍</button>
+      </div>
+      <button class="search-exit-btn" id="searchExitBtn" type="button" hidden>返回</button>
+    </div>
+
+    <div class="top-actions">
+      <button class="top-btn" id="backBtn" type="button" aria-label="回上一頁" disabled>← 上一步</button>
+      <button class="top-btn" id="homeBtn" type="button" aria-label="回到首頁">回首頁</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="search-results-wrapper" id="searchWrapper" hidden>
+      <div class="search-results-box" id="searchResultsBox"></div>
+    </div>
+
+    <!-- 1. 首頁 -->
+    <section class="screen cover active" id="coverScreen">
+      <div class="cover-inner">
+        <div class="cover-content">
+          <div class="cover-kicker">YUANTA EMPLOYEE SUPPORT</div>
+          <h1 id="greetingHeading">午安，喝杯水休息一下！</h1>
+          <p>在人生不同篇章中，每個人都有專屬的需求與期待。探索現在的自己，發現最適合您的健康福祉資源，讓元大陪伴您走好每一段重要旅程。</p>
+          
+          <div class="art-illustration-box" aria-hidden="true">
+            <svg class="heart-hug-svg" viewBox="0 0 220 160">
+              <g class="hug-sparks">
+                <circle cx="110" cy="50" r="4" fill="#F6AD55" />
+                <circle cx="85" cy="40" r="3" fill="#E65C7B" />
+                <circle cx="135" cy="42" r="3" fill="#E65C7B" />
+                <path d="M110,25 L112,30 L117,30 L113,34 L115,39 L110,36 L105,39 L107,34 L103,30 L108,30 Z" fill="#F6AD55" />
+              </g>
+              <g class="hug-left">
+                <path d="M85,45 C85,30 110,18 130,40 C150,18 175,30 175,45 C175,80 130,118 130,118 C130,118 85,80 85,45 Z" fill="#E65C7B" />
+                <circle cx="108" cy="55" r="5" fill="#FFF" opacity="0.4" />
+              </g>
+              <g class="hug-right">
+                <path d="M50,55 C50,40 75,28 95,50 C115,28 140,40 140,55 C140,90 95,128 95,128 C95,128 50,90 50,55 Z" fill="#F6AD55" />
+                <circle cx="73" cy="65" r="5" fill="#FFF" opacity="0.5" />
+              </g>
+            </svg>
+          </div>
+
+          <button class="primary-btn" id="beginBtn" type="button">開始探索 →</button>
+          <div class="cover-note">簡單選擇・幫你聚焦生活核心需要</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 選擇生活階段 -->
+    <section class="screen moments" id="momentScreen">
+      <div class="moment-head"></div>
+      <div class="moment-stage" id="momentStageBox"></div>
+    </section>
+
+    <!-- 3. 選擇福祉構面 -->
+    <section class="screen category" id="categoryScreen">
+      <div class="category-shell">
+        <div class="category-kicker" id="categoryStageSub">SELECT WELFARE DIMENSION</div>
+        <h2 id="categoryStageTitle">請選擇您想了解的照顧構面</h2>
+        
+        <div class="category-circle-grid" id="categoryCircleGrid">
+          <!-- 卡片 1：健康與身心 -->
+          <div class="category-circle-card" data-cat="health">
+            <div class="category-circle-media">
+              <img src="cat_health.gif" onerror="this.onerror=null;this.src='cat_health.jpg';if(this.src==='cat_health.jpg')this.onerror=function(){this.src='health.png'};" alt="健康與身心" />
+              <video autoplay loop muted playsinline>
+                <source src="cat_health.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="category-circle-title">健康與身心</div>
+            <span class="category-circle-badge">探索福祉 →</span>
+          </div>
+          <!-- 卡片 2：家庭與生活 -->
+          <div class="category-circle-card" data-cat="family">
+            <div class="category-circle-media">
+              <img src="cat_family.gif" onerror="this.onerror=null;this.src='cat_family.jpg';if(this.src==='cat_family.jpg')this.onerror=function(){this.src='family.png'};" alt="家庭與生活" />
+              <video autoplay loop muted playsinline>
+                <source src="cat_family.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="category-circle-title">家庭與生活</div>
+            <span class="category-circle-badge">探索福祉 →</span>
+          </div>
+          <!-- 卡片 3：財務與未來 -->
+          <div class="category-circle-card" data-cat="finance">
+            <div class="category-circle-media">
+              <img src="cat_finance.gif" onerror="this.onerror=null;this.src='cat_finance.jpg';if(this.src==='cat_finance.jpg')this.onerror=function(){this.src='finance.png'};" alt="財務與未來" />
+              <video autoplay loop muted playsinline>
+                <source src="cat_finance.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="category-circle-title">財務與未來</div>
+            <span class="category-circle-badge">探索福祉 →</span>
+          </div>
+          <!-- 卡片 4：職涯與成長 -->
+          <div class="category-circle-card" data-cat="career">
+            <div class="category-circle-media">
+              <img src="cat_career.gif" onerror="this.onerror=null;this.src='cat_career.jpg';if(this.src==='cat_career.jpg')this.onerror=function(){this.src='career.png'};" alt="職涯與成長" />
+              <video autoplay loop muted playsinline>
+                <source src="cat_career.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="category-circle-title">職涯與成長</div>
+            <span class="category-circle-badge">探索福祉 →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 結果與說明卡片面板 -->
+    <section class="screen result" id="resultScreen">
+      <div class="result-inner">
+        <div class="result-header">
+          <div class="result-kicker">WARM SUPPORT FOR YOU</div>
+          <h2 id="resultTitle"></h2>
+          <p class="result-desc" id="resultDesc"></p>
+
+          <div class="newbie-tabs" id="newbieTabs">
+            <button class="newbie-tab active" data-tab="all">📋 顯示該階段全部</button>
+            <button class="newbie-tab" data-tab="health">🌿 健康與身心</button>
+            <button class="newbie-tab" data-tab="family">🏡 家庭與生活</button>
+            <button class="newbie-tab" data-tab="finance">💰 財務與未來</button>
+            <button class="newbie-tab" data-tab="career">🚀 職涯與成長</button>
+          </div>
+        </div>
+        
+        <div id="resourceContainer"></div>
+
+        <div class="hr-support-card">
+          <div class="hr-support-text">
+            <h4>對各項福利規定有任何疑問，或需要專人協助嗎？</h4>
+            <p>隨時拿起電話，人資夥伴一直都在，幫你釐清最適合的方案。</p>
+          </div>
+          <a href="tel:8888" class="hr-support-btn">直撥人資分機 8888</a>
+        </div>
+
+        <div class="result-actions">
+          <button class="secondary-btn" id="retryCategoryBtn" type="button">選擇本階段其他構面</button>
+          <button class="secondary-btn" id="otherMomentBtn" type="button">看其他生活階段</button>
+        </div>
+        <div class="disclaimer">本陪伴導航協助同仁瞭解重點照顧資源，實際請假日數、津貼與年資計算，悉依照公司發布之最新辦法辦理。</div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle"></h3>
+      <p id="modalText"></p>
+      <div class="modal-note" id="modalNote"></div>
+      <div class="modal-actions"><button class="secondary-btn" id="closeModalBtn" type="button">我知道了，謝謝</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+window.addEventListener('DOMContentLoaded', () => {
+
+  // =========================================================
+  // ★ 0. 音效與音樂檔名設定區 (.mp3 或 .wav 可隨時修改)
+  // =========================================================
+  const AudioFiles = {
+    intro: 'intro.mp3',   // 首頁「開始探索」進場音效 (可填 .mp3 或 .wav)
+    bgm:   'bgm.mp3',     // 溫柔背景音樂 (可填 .mp3 或 .wav)
+    magic: 'magic.mp3'    // 愛心特效彩蛋音效 (可填 .mp3 或 .wav)
+  };
+
+  // =========================================================
+  // ★ 1. 內建輕量合成音備援 (調高按鍵與提示音效音量)
+  // =========================================================
+  const SynthFX = {
+    ctx: null,
+    initCtx() {
+      if (!this.ctx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
+      }
+      if (this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    },
+    playIntro() {
+      try {
+        this.initCtx();
+        const notes = [261.63, 329.63, 392.00, 493.88];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          const startTime = this.ctx.currentTime + (idx * 0.18);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.02, startTime);
+          gain.gain.linearRampToValueAtTime(0.25, startTime + 0.08); // 音量提升
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.1);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 1.1);
+        });
+      } catch(e) {}
+    },
+    playMagic() {
+      try {
+        this.initCtx();
+        const notes = [329.63, 392.00, 493.88];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          const startTime = this.ctx.currentTime + (idx * 0.14);
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.02, startTime);
+          gain.gain.linearRampToValueAtTime(0.2, startTime + 0.05); // 音量提升
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.7);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.7);
+        });
+      } catch(e) {}
+    },
+    playClick() {
+      try {
+        this.initCtx();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(300, now); // 頻率稍微調高更清晰
+        osc.frequency.exponentialRampToValueAtTime(450, now + 0.02);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.09);
+        gain.gain.setValueAtTime(0.35, now); // ★ 按鍵聲音量明顯調高 (原本為 0.12)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+      } catch(e) {}
+    },
+    playDing() {
+      try {
+        this.initCtx();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.05);
+        gain.gain.setValueAtTime(0.4, now); // ★ 彈窗提示音音量調高 (原本為 0.15)
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      } catch(e) {}
+    }
+  };
+
+  // =========================================================
+  // ★ 2. 溫柔背景音樂 BGM 播放器 (音量維持 0.35 不變)
+  // =========================================================
+  const BGMPlayer = {
+    audio: null,
+    isPlaying: false,
+    isMuted: false, // ★ 100% 全域總靜音開關
+    init() {
+      if (!this.audio) {
+        this.audio = new Audio(AudioFiles.bgm);
+        this.audio.loop = true;
+        this.audio.volume = 0.35; // 保持原本背景音樂適中音量
+      }
+    },
+    start() {
+      if (this.isMuted) return;
+      this.init();
+      this.audio.play().then(() => {
+        this.isPlaying = true;
+        this.updateBtnUI();
+      }).catch(() => {
+        // 因瀏覽器安全政策暫未播放，不報錯，等點擊時喚醒
+      });
+    },
+    stop() {
+      this.isPlaying = false;
+      if (this.audio) {
+        this.audio.pause();
+      }
+      this.updateBtnUI();
+    },
+    toggle() {
+      this.isMuted = !this.isMuted;
+      if (this.isMuted) {
+        this.stop();
+      } else {
+        this.start();
+      }
+      this.updateBtnUI();
+    },
+    updateBtnUI() {
+      const btn = document.getElementById('bgmToggleBtn');
+      if (!btn) return;
+      if (!this.isMuted && this.isPlaying) {
+        btn.innerHTML = '🎵 靜音';
+        btn.classList.remove('muted');
+      } else {
+        btn.innerHTML = '🔇 播放音樂';
+        btn.classList.add('muted');
+      }
+    }
+  };
+
+  // 網頁一載入，第一時間立刻嘗試放音樂
+  BGMPlayer.start();
+
+  // 雙重保險：只要同仁進網頁在任一處觸控或點擊第一次，立刻順暢喚醒背景樂
+  const startBGMOnFirstClick = () => {
+    if (!BGMPlayer.isMuted && !BGMPlayer.isPlaying) {
+      BGMPlayer.start();
+    }
+  };
+  window.addEventListener('click', startBGMOnFirstClick, { once: true });
+  window.addEventListener('touchstart', startBGMOnFirstClick, { once: true });
+
+  const bgmBtn = document.getElementById('bgmToggleBtn');
+  if (bgmBtn) {
+    bgmBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      BGMPlayer.toggle();
+      if (!BGMPlayer.isMuted) {
+        SoundFX.playClick();
+      }
+    });
+  }
+
+  // =========================================================
+  // ★ 3. 雙偵測音效管理器 (調高外部音效檔音量至 0.9)
+  // =========================================================
+  const SoundFX = {
+    playWithFallback(baseName, fallbackSynth, vol = 0.9) { // ★ 調高外部音效播放音量
+      if (BGMPlayer.isMuted) return; // ★ 全域靜音開啟時，100% 關閉任何音效
+      const tryPlay = (ext) => {
+        const audio = new Audio(`${baseName}.${ext}`);
+        audio.volume = vol;
+        const promise = audio.play();
+        if (promise !== undefined) {
+          promise.catch(() => {
+            if (ext === 'mp3') {
+              tryPlay('wav'); // 找不到 mp3，自動嘗試尋找 .wav 檔案
+            } else if (fallbackSynth) {
+              fallbackSynth(); // 兩個檔案都找不到，秒切內建合成音備援
+            }
+          });
+        }
+      };
+      tryPlay('mp3');
+    },
+    playIntroMagic() {
+      if (BGMPlayer.isMuted) return;
+      this.playWithFallback('intro', () => SynthFX.playIntro(), 0.9);
+    },
+    playMagicShort() {
+      if (BGMPlayer.isMuted) return;
+      this.playWithFallback('magic', () => SynthFX.playMagic(), 0.9);
+    },
+    playClick() {
+      if (BGMPlayer.isMuted) return;
+      SynthFX.playClick();
+    },
+    playDing() {
+      if (BGMPlayer.isMuted) return;
+      SynthFX.playDing();
+    }
+  };
+
+  function updateGreeting() {
+    const hour = new Date().getHours();
+    let greeting = "早安";
+    if (hour >= 11 && hour < 17) {
+      greeting = "午安";
+    } else if (hour >= 17 || hour < 5) {
+      greeting = "晚安";
+    }
+    const el = document.getElementById("greetingHeading");
+    if (el) {
+      el.innerHTML = `${greeting}，喝杯水休息一下吧！`;
+    }
+  }
+  updateGreeting();
+
+  const momentSvgAnimations = {
+    'stage_01': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_01.gif" onerror="this.onerror=null;this.src='stage_01.jpg';" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="啟程成長" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">
+          <source src="stage_01.mp4" type="video/mp4">
+        </video>
+      </div>`,
+    'stage_02': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_02.gif" onerror="this.onerror=null;this.src='stage_02.jpg';" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="幸福同行" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">
+          <source src="stage_02.mp4" type="video/mp4">
+        </video>
+      </div>`,
+    'stage_03': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_03.gif" onerror="this.onerror=null;this.src='stage_03.jpg';" style="width:100%;height:100%;object-fit:cover;object-position:28% center;transform:scale(1.15) translateX(-8%);position:absolute;inset:0;z-index:1;" alt="守護家庭" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;object-position:28% center;transform:scale(1.15) translateX(-8%);position:absolute;inset:0;z-index:2;">
+          <source src="stage_03.mp4" type="video/mp4">
+        </video>
+      </div>`,
+    'stage_04': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_04.gif" onerror="this.onerror=null;this.src='stage_04.jpg';" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="好好照顧自己" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">
+          <source src="stage_04.mp4" type="video/mp4">
+        </video>
+      </div>`,
+    'stage_05': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_05.gif" onerror="this.onerror=null;this.src='stage_05.jpg';" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="迎向精彩下一站" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">
+          <source src="stage_05.mp4" type="video/mp4">
+        </video>
+      </div>`,
+    'stage_06': `
+      <div style="width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;background:#fff;">
+        <img src="stage_06.gif" onerror="this.onerror=null;this.src='stage_06.jpg';" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:1;" alt="愛與責任的延續" />
+        <video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;">
+          <source src="stage_06.mp4" type="video/mp4">
+        </video>
+      </div>`
+  };
+
+  const stages = [
+    {
+      id: 'stage_01',
+      no: '01',
+      title: '啟程成長',
+      desc: '懷抱夢想踏入職場，每一次學習與成長，都是未來的重要起點。元大陪伴您累積實力，開啟職涯新篇章',
+      bg: 'linear-gradient(150deg,#FFF5F7,#FED7E2 60%,#FBB6CE)'
+    },
+    {
+      id: 'stage_02',
+      no: '02',
+      title: '幸福同行',
+      desc: '與重要的人攜手前行，共同規劃未來。元大陪伴您迎接幸福人生的重要里程碑',
+      bg: 'linear-gradient(150deg,#FFF5F5,#FED7D7 60%,#FEB2B2)'
+    },
+    {
+      id: 'stage_03',
+      no: '03',
+      title: '守護家庭',
+      desc: '從兩人世界到一家人的幸福日常，每個嶄新角色都值得被支持與照顧。無論是陪伴孩子成長，或照顧年邁家人，元大都與您一起守護家庭幸福',
+      bg: 'linear-gradient(150deg,#E6FFFA,#B2F5EA 60%,#81E6D9)'
+    },
+    {
+      id: 'stage_04',
+      no: '04',
+      title: '好好照顧自己',
+      desc: '健康是穩定前行的重要力量。從身體到心理，元大陪伴您打造更有活力、更有韌性的生活。',
+      bg: 'linear-gradient(150deg,#FEFCBF,#FAF089 60%,#F6E05E)'
+    },
+    {
+      id: 'stage_05',
+      no: '05',
+      title: '迎向精彩下一站',
+      desc: '人生即將迎接新的篇章。元大陪伴您提早規劃，從容開啟豐盛自在的未來生活。',
+      bg: 'linear-gradient(150deg,#EBF8FF,#BEE3F8 60%,#90CDF4)'
+    },
+    {
+      id: 'stage_06',
+      no: '06',
+      title: '愛與責任的延續',
+      desc: '人生每個階段都值得被照顧。面對疾病、重大變故或未來安排時，元大以完善的保障與關懷機制，陪伴您與家人安心面對，讓愛與責任得以延續。',
+      bg: 'linear-gradient(150deg,#FEFCBF,#F6E05E 60%,#ECC94B)'
+    }
+  ];
+
+  const welfareData = {
+    'stage_01': {
+      health: [
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['健康身心', '年度休假', '適時休息，也是持續前進的重要力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
+        ['健康身心', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）']
+     ],
+      family: [
+        ['家庭生活', '生育補助', '迎接新生命的喜悅，元大陪您一起準備','職工本人或配偶生育時，可申請新台幣15000元生育補助；若夫妻雙方皆為元大員工，雙方皆可申請。另享團體保險生育保險金5000元，女性同仁每胎最高可獲20000元補助，陪伴您安心迎接家庭新成員'],
+        ['家庭生活', '安胎休養假', '讓準媽媽能安心養胎，專心照顧自己','懷孕員工如有安胎需求，可依規定申請安胎休養假，減輕孕期壓力與身體負擔，讓準媽媽能安心調養身心，迎接新生命的到來'],
+        ['家庭生活', '產假', '給自己更多恢復時間，也給寶寶更多陪伴','提供十周產假，優於法令規定，協助同仁兼顧產後身體恢復與新生兒照顧需求，從容迎接人生的重要新篇章'],
+        ['家庭生活', '流產假', '在人生需要被照顧的時刻，提供溫暖支持','妊娠未滿2個月流產提供7日支薪假；妊娠2個月以上未滿3個月流產提供9日支薪假，協助同仁安心休養，照顧身心健康'],
+        ['家庭生活', '產檢假', '重要的每一次檢查，都值得被充分支持','提供8日產檢假，讓準媽媽能安心完成孕期各項檢查，守護自己與寶寶的健康'],
+        ['家庭生活', '陪產檢及陪產假', '迎接新生命的重要時刻，一起參與不缺席','提供10日支薪假，可用於陪伴產檢及配偶分娩前後20日內使用，共同參與迎接新生命的重要時刻'],
+        ['家庭生活', '哺集乳室', '讓工作與育兒兼顧得更從容','各辦公據點設置舒適完善的哺集乳室，並持續優化設備與環境，多次獲得政府優良哺集乳室認證，打造更友善的育兒環境'],
+        ['家庭生活', '托育優惠方案', '減輕育兒負擔，陪伴孩子快樂成長','與優質合法托育機構合作，提供員工專屬學費優惠方案，協助同仁減輕托育費用負擔'],
+        ['家庭生活', '彈性/育嬰留職停薪', '照顧孩子的同時，也能安心規劃職涯','每位子女可申請最長兩年育嬰留職停薪，其中最長六個月可享平均投保薪資80％之育嬰津貼與補助<br><br>另同仁如有申請彈性育嬰留停需求，享優於法令規定，依申請日數合計2成每月固定薪資補助，並承認其年資，協助同仁兼顧家庭照顧與職涯發展'],
+        ['家庭生活', '家庭照顧假', '照顧家人，也是重要的工作','每年提供7天家庭照顧假，並與事假分開計算，讓員工得以兼顧家庭責任與工作發展'],
+        ['家庭生活', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['家庭生活', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['家庭生活', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['家庭生活', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['家庭生活', '孕期友善穿著', '讓孕期工作更舒適自在','懷孕期間可穿著舒適商務服裝上班，提升工作舒適度，打造更貼心的友善職場環境'],
+        ['家庭生活', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['家庭生活', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['家庭生活', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['家庭生活', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['家庭生活', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['家庭生活', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['家庭生活', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      career: [
+        ['職涯成長', '元大e學苑', '學習沒有終點，成長持續發生','提供數位學習平台與豐富課程資源，協助員工隨時隨地自主學習，持續提升專業能力與競爭力'],
+        ['職涯成長', '全方位教育訓練', '陪伴您持續精進專業與領導能力','提供新人訓練、專業課程、管理職培訓及領導力發展課程，打造完整學習藍圖，支持不同職涯階段的人才發展需求'],
+        ['職涯成長', '語言與金融證照獎勵', '讓每一次進步都獲得肯定','取得指定語言或金融專業證照，可申請檢定補助與獎勵金，鼓勵持續精進專業能力與國際競爭力'],
+        ['職涯成長', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['職涯成長', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。']
+      ]
+    },
+    'stage_02': {
+      health: [
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['健康身心', '年度休假', '適時休息，也是持續前進的重要力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
+        ['健康身心', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）']
+      ],
+      family: [
+        ['家庭生活', '生育補助', '迎接新生命的喜悅，元大陪您一起準備','職工本人或配偶生育時，可申請新台幣15000元生育補助；若夫妻雙方皆為元大員工，雙方皆可申請。另享團體保險生育保險金5000元，女性同仁每胎最高可獲20000元補助，陪伴您安心迎接家庭新成員'],
+        ['家庭生活', '安胎休養假', '讓準媽媽能安心養胎，專心照顧自己','懷孕員工如有安胎需求，可依規定申請安胎休養假，減輕孕期壓力與身體負擔，讓準媽媽能安心調養身心，迎接新生命的到來'],
+        ['家庭生活', '產假', '給自己更多恢復時間，也給寶寶更多陪伴','提供十周產假，優於法令規定，協助同仁兼顧產後身體恢復與新生兒照顧需求，從容迎接人生的重要新篇章'],
+        ['家庭生活', '流產假', '在人生需要被照顧的時刻，提供溫暖支持','妊娠未滿2個月流產提供7日支薪假；妊娠2個月以上未滿3個月流產提供9日支薪假，協助同仁安心休養，照顧身心健康'],
+        ['家庭生活', '產檢假', '重要的每一次檢查，都值得被充分支持','提供8日產檢假，讓準媽媽能安心完成孕期各項檢查，守護自己與寶寶的健康'],
+        ['家庭生活', '陪產檢及陪產假', '迎接新生命的重要時刻，一起參與不缺席','提供10日支薪假，可用於陪伴產檢及配偶分娩前後20日內使用，共同參與迎接新生命的重要時刻'],
+        ['家庭生活', '哺集乳室', '讓工作與育兒兼顧得更從容','各辦公據點設置舒適完善的哺集乳室，並持續優化設備與環境，多次獲得政府優良哺集乳室認證，打造更友善的育兒環境'],
+        ['家庭生活', '托育優惠方案', '減輕育兒負擔，陪伴孩子快樂成長','與優質合法托育機構合作，提供員工專屬學費優惠方案，協助同仁減輕托育費用負擔'],
+        ['家庭生活', '彈性/育嬰留職停薪', '照顧孩子的同時，也能安心規劃職涯','每位子女可申請最長兩年育嬰留職停薪，其中最長六個月可享平均投保薪資80％之育嬰津貼與補助<br><br>另同仁如有申請彈性育嬰留停需求，享優於法令規定，依申請日數合計2成每月固定薪資補助，並承認其年資，協助同仁兼顧家庭照顧與職涯發展'],
+        ['家庭生活', '家庭照顧假', '照顧家人，也是重要的工作','每年提供7天家庭照顧假，並與事假分開計算，讓員工得以兼顧家庭責任與工作發展'],
+        ['家庭生活', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['家庭生活', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['家庭生活', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['家庭生活', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['家庭生活', '孕期友善穿著', '讓孕期工作更舒適自在','懷孕期間可穿著舒適商務服裝上班，提升工作舒適度，打造更貼心的友善職場環境'],
+        ['家庭生活', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['家庭生活', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['家庭生活', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['家庭生活', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['家庭生活', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['家庭生活', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['家庭生活', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ]
+    },
+    'stage_03': {
+      health: [
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['健康身心', '年度休假', '適時休息，也是持續前進的重要力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
+        ['健康身心', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）']
+      ],
+      family: [
+        ['家庭生活', '生育補助', '迎接新生命的喜悅，元大陪您一起準備','職工本人或配偶生育時，可申請新台幣15000元生育補助；若夫妻雙方皆為元大員工，雙方皆可申請。另享團體保險生育保險金5000元，女性同仁每胎最高可獲20000元補助，陪伴您安心迎接家庭新成員'],
+        ['家庭生活', '安胎休養假', '讓準媽媽能安心養胎，專心照顧自己','懷孕員工如有安胎需求，可依規定申請安胎休養假，減輕孕期壓力與身體負擔，讓準媽媽能安心調養身心，迎接新生命的到來'],
+        ['家庭生活', '產假', '給自己更多恢復時間，也給寶寶更多陪伴','提供十周產假，優於法令規定，協助同仁兼顧產後身體恢復與新生兒照顧需求，從容迎接人生的重要新篇章'],
+        ['家庭生活', '流產假', '在人生需要被照顧的時刻，提供溫暖支持','妊娠未滿2個月流產提供7日支薪假；妊娠2個月以上未滿3個月流產提供9日支薪假，協助同仁安心休養，照顧身心健康'],
+        ['家庭生活', '產檢假', '重要的每一次檢查，都值得被充分支持','提供8日產檢假，讓準媽媽能安心完成孕期各項檢查，守護自己與寶寶的健康'],
+        ['家庭生活', '陪產檢及陪產假', '迎接新生命的重要時刻，一起參與不缺席','提供10日支薪假，可用於陪伴產檢及配偶分娩前後20日內使用，共同參與迎接新生命的重要時刻'],
+        ['家庭生活', '哺集乳室', '讓工作與育兒兼顧得更從容','各辦公據點設置舒適完善的哺集乳室，並持續優化設備與環境，多次獲得政府優良哺集乳室認證，打造更友善的育兒環境'],
+        ['家庭生活', '托育優惠方案', '減輕育兒負擔，陪伴孩子快樂成長','與優質合法托育機構合作，提供員工專屬學費優惠方案，協助同仁減輕托育費用負擔'],
+        ['家庭生活', '彈性/育嬰留職停薪', '照顧孩子的同時，也能安心規劃職涯','每位子女可申請最長兩年育嬰留職停薪，其中最長六個月可享平均投保薪資80％之育嬰津貼與補助<br><br>另同仁如有申請彈性育嬰留停需求，享優於法令規定，依申請日數合計2成每月固定薪資補助，並承認其年資，協助同仁兼顧家庭照顧與職涯發展'],
+        ['家庭生活', '家庭照顧假', '照顧家人，也是重要的工作','每年提供7天家庭照顧假，並與事假分開計算，讓員工得以兼顧家庭責任與工作發展'],
+        ['家庭生活', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['家庭生活', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['家庭生活', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['家庭生活', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['家庭生活', '孕期友善穿著', '讓孕期工作更舒適自在','懷孕期間可穿著舒適商務服裝上班，提升工作舒適度，打造更貼心的友善職場環境'],
+        ['家庭生活', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['家庭生活', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['家庭生活', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['家庭生活', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['家庭生活', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['家庭生活', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['家庭生活', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ]
+    },
+    'stage_04': {
+      health: [
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['健康身心', '年度休假', '適時休息，也是持續前進的重要力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
+        ['健康身心', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）']
+      ],
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      career: [
+        ['職涯成長', '元大e學苑', '學習沒有終點，成長持續發生','提供數位學習平台與豐富課程資源，協助員工隨時隨地自主學習，持續提升專業能力與競爭力'],
+        ['職涯成長', '全方位教育訓練', '陪伴您持續精進專業與領導能力','提供新人訓練、專業課程、管理職培訓及領導力發展課程，打造完整學習藍圖，支持不同職涯階段的人才發展需求'],
+        ['職涯成長', '語言與金融證照獎勵', '讓每一次進步都獲得肯定','取得指定語言或金融專業證照，可申請檢定補助與獎勵金，鼓勵持續精進專業能力與國際競爭力'],
+        ['職涯成長', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['職涯成長', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。']
+      ]
+    },
+    'stage_05': {
+      health: [
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
+        ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['健康身心', '年度休假', '適時休息，也是持續前進 Important 的力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
+        ['健康身心', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）']
+      ],
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活的重要時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      career: [
+        ['職涯成長', '元大e學苑', '學習沒有終點，成長持續發生','提供數位學習平台與豐富課程資源，協助員工隨時隨地自主學習，持續提升專業能力與競爭力'],
+        ['職涯成長', '全方位教育訓練', '陪伴您持續精進專業與領導能力','提供新人訓練、專業課程、管理職培訓及領導力發展課程，打造完整學習藍圖，支持不同職涯階段的人才發展需求'],
+        ['職涯成長', '語言與金融證照獎勵', '讓每一次進步都獲得肯定','取得指定語言或金融專業證照，可申請檢定補助與獎勵金，鼓勵持續精進專業能力與國際競爭力'],
+        ['職涯成長', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['職涯成長', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。']
+      ]
+    },
+    'stage_06': {
+      finance: [
+        ['財務未來', '員工持股信託', '與公司一起成長，共享發展成果','公司依員工每月提存金額相對提撥獎勵金，共同累積公司股票資產。2026年起新增年度自願增提計劃，進一步協助員工進行長期理財規劃'],
+        ['財務未來', '團體保險', '打造更完整的人生保障網','提供壽險、意外險、醫療險、癌症險及重大疾病保險等保障，並提供眷屬優惠加保方案，協助擴大家庭保障範圍'],
+        ['財務未來', '三節禮金', '在重要的日子傳遞溫暖與祝福','於三節發放禮金，表達公司對員工的感謝與關懷，分享節慶喜悅'],
+        ['財務未來', '撫卹與眷屬關懷', '讓愛與責任在關鍵時刻獲得延續','員工因一般災害身故時，依規定核發最高40個月平均工資之撫恤金，另加發5個月平均工資喪葬補助，協助家屬獲得實質支持與關懷'],
+        ['財務未來', '結婚補助', '支持您生活 Important 的時刻','職工本人結婚可獲得公司補助新台幣3000元（雙方皆在本公司服務者，各給一份）'],
+        ['財務未來', '住院及手術補助', '陪伴您度過難關，讓治療更無後顧之憂','職工本人、配偶、父母、子女因病住院或手術費，按扣除全民健保及團體保險補助後之餘額由職工本人申請補助，每次補助上限新台幣3000元，惟需為住院三天以上，每年最多不得超過新台幣6000元，本補助並以全民健保或團體保險指定之特約醫院為限。（夫妻雙方或兄弟姐妹或父母子女同在本公司服務者，各給一份）'],
+        ['財務未來', '急難救助', '守護您的安心生活','職工本人家庭遭遇急難例如風、水、火、震等重大災害，由本會派員勘查屬實，按受損程度及其項目，簽報主任委員核定後，給予補助，但補助金額最高不得超過新台幣100000元，並得應職工要求，協助其洽本會指定銀行申辦急難救助貸款'],
+        ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：,<br><br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br><br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br><br>職工本本進修就讀教育主館機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
+        ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
+        ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ]
+    }
+  };
+
+  const catNames = {
+    health: '🌿 健康與身心',
+    family: '🏡 家庭與生活',
+    finance: '💰 財務與未來',
+    career: '🚀 職涯與成長'
+  };
+
+  const catDescs = {
+    all: '點擊下方各項福祉說明，探索本階段為您提供之全方位關懷與福利資源。',
+    health: '關注身心健康，是照顧自己的第一步。無論健康管理、壓力調適或心理支持，元大透過多元健康促進與關懷措施，陪伴您維持身心平衡，以更健康、更有活力的狀態迎接每一天',
+    family: '從迎接新生命、伴孩子成長，到照顧家人與家庭需求，人生每個重要時刻都值得被支持。元大提供完善的家庭照顧與婚育支持措施，陪伴您兼顧家庭幸福與職涯發展',
+    finance: '穩健的未來來自持續累積與完善保障。從財務規劃、風險保障到未來準備，元大陪伴您建立更安心的生活基礎，為自己及家人的未來做好準備',
+    career: '每一次學習都是成長的開始。從專業能力培養、證照取得到職涯發展，元大提供完整的人才培育資源，陪伴您持續精進、成就更好的自己'
+  };
+
+  const state = {
+    stageIndex: 0,
+    stage: stages[0],
+    selectedCategory: 'all',
+    history: []
+  };
+
+  const screens = {
+    cover: document.getElementById('coverScreen'),
+    moments: document.getElementById('momentScreen'),
+    category: document.getElementById('categoryScreen'),
+    result: document.getElementById('resultScreen')
+  };
+
+  const backBtn = document.getElementById('backBtn');
+  function updateBackBtn() {
+    if (backBtn) backBtn.disabled = (state.history.length === 0);
+  }
+
+  function pushHistory(pageName, extra = {}) {
+    state.history.push({
+      pageName,
+      stageIndex: state.stageIndex,
+      selectedCategory: state.selectedCategory,
+      ...extra
+    });
+    updateBackBtn();
+  }
+
+  function updateTopbarSearchVisibility(screenName) {
+    const topSearch = document.getElementById('topbarSearch');
+    if (topSearch) {
+      topSearch.style.display = (screenName === 'cover' || screenName === 'moments') ? 'none' : 'flex';
+    }
+  }
+
+  function showScreen(name, recordHistory = true, pushBrowserState = true) {
+    exitSearchMode();
+    if (recordHistory) {
+      const currentActive = Object.keys(screens).find((k) => screens[k] && screens[k].classList.contains('active')) || 'cover';
+      pushHistory(currentActive);
+    }
+    if (pushBrowserState && window.history && window.history.pushState) {
+      try {
+        window.history.pushState({ screen: name, stageIndex: state.stageIndex, category: state.selectedCategory }, '');
+      } catch (err) {}
+    }
+    Object.values(screens).forEach((s) => {
+      if (s) s.classList.remove('active');
+    });
+    if (screens[name]) {
+      screens[name].classList.add('active');
+    }
+    updateTopbarSearchVisibility(name);
+    updateBackBtn();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.addEventListener('popstate', (e) => {
+    if (state.history.length > 0) {
+      exitSearchMode();
+      const lastState = state.history.pop();
+      updateBackBtn();
+      state.stageIndex = lastState.stageIndex;
+      state.selectedCategory = lastState.selectedCategory;
+      Object.values(screens).forEach((s) => {
+        if (s) s.classList.remove('active');
+      });
+      if (screens[lastState.pageName]) {
+        screens[lastState.pageName].classList.add('active');
+      }
+      updateTopbarSearchVisibility(lastState.pageName);
+      if (lastState.pageName === 'moments') {
+        renderMoments();
+      } else if (lastState.pageName === 'category') {
+        updateCategoryScreen();
+      } else if (lastState.pageName === 'result') {
+        updateResultView(state.selectedCategory);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      if (state.history.length === 0) return;
+      SoundFX.playClick();
+      exitSearchMode();
+      const lastState = state.history.pop();
+      updateBackBtn();
+      state.stageIndex = lastState.stageIndex;
+      state.selectedCategory = lastState.selectedCategory;
+      Object.values(screens).forEach((s) => {
+        if (s) s.classList.remove('active');
+      });
+      if (screens[lastState.pageName]) {
+        screens[lastState.pageName].classList.add('active');
+      }
+      updateTopbarSearchVisibility(lastState.pageName);
+      if (lastState.pageName === 'moments') {
+        renderMoments();
+      } else if (lastState.pageName === 'category') {
+        updateCategoryScreen();
+      } else if (lastState.pageName === 'result') {
+        updateResultView(state.selectedCategory);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  function triggerHeartShower() {
+    SoundFX.playMagicShort();
+    const container = document.getElementById('heartShowerContainer');
+    if (!container) return;
+
+    const colors = ['#FF8A9E', '#FFB37C', '#E65C7B', '#F6AD55', '#FF6B8B', '#FCA5A5'];
+    const heartSvgs = colors.map(col => 
+      `data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='${encodeURIComponent(col)}' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E`
+    );
+
+    for (let i = 0; i < 35; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'shower-heart';
+      
+      const randomLeft = Math.random() * 92 + 4;
+      const randomSize = Math.floor(Math.random() * 26) + 18;
+      const randomDuration = (Math.random() * 1.8 + 2.2).toFixed(2);
+      const randomDelay = (Math.random() * 0.5).toFixed(2);
+      const randomSvg = heartSvgs[Math.floor(Math.random() * heartSvgs.length)];
+
+      heart.style.left = `${randomLeft}%`;
+      heart.style.width = `${randomSize}px`;
+      heart.style.height = `${randomSize}px`;
+      heart.style.backgroundImage = `url("${randomSvg}")`;
+      heart.style.animationDuration = `${randomDuration}s`;
+      heart.style.animationDelay = `${randomDelay}s`;
+
+      container.appendChild(heart);
+
+      setTimeout(() => {
+        if (heart.parentNode) {
+          heart.parentNode.removeChild(heart);
+        }
+      }, (parseFloat(randomDuration) + parseFloat(randomDelay) + 0.2) * 1000);
+    }
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const searchResultsBox = document.getElementById('searchResultsBox');
+  const searchSubmitBtn = document.getElementById('searchSubmitBtn');
+  const searchExitBtn = document.getElementById('searchExitBtn');
+
+  function handleSearchInput() {
+    if (!searchInput) return;
+    const kw = searchInput.value.trim().toLowerCase();
+    if (!kw) {
+      exitSearchMode();
+      return;
+    }
+    
+    if (searchExitBtn) searchExitBtn.hidden = false;
+    const searchWrapper = document.getElementById('searchWrapper');
+    if (searchWrapper) searchWrapper.hidden = false;
+    if (searchResultsBox) searchResultsBox.hidden = false;
+
+    document.querySelectorAll('.screen').forEach((s) => {
+      s.style.display = 'none';
+    });
+
+    let matches = [];
+    Object.values(welfareData).forEach((stageObj) => {
+      Object.values(stageObj).forEach((resList) => {
+        resList.forEach((item) => {
+          const textStr = `${item[0]} ${item[1]} ${item[2]} ${item[3]}`.toLowerCase();
+          if (textStr.includes(kw) && !matches.some((x) => x[1] === item[1])) {
+            matches.push(item);
+          }
+        });
+      });
+    });
+
+    if (searchResultsBox) {
+      searchResultsBox.innerHTML = '';
+      if (matches.length === 0) {
+        searchResultsBox.innerHTML = `<div class="search-no-result">沒有找到與「${searchInput.value}」相關的福利辦法，您可以改輸入關鍵字或撥打人資專線。</div>`;
+      } else {
+        const suggestionList = document.createElement('div');
+        suggestionList.className = 'search-suggestion-list';
+        matches.forEach((item) => {
+          const row = document.createElement('div');
+          row.className = 'search-suggestion-item';
+          row.innerHTML = `
+            <span class="search-suggestion-title">💡 ${item[1]}</span>
+            <span class="search-suggestion-tag">${item[0]}</span>
+          `;
+          row.addEventListener('click', () => openModal(item));
+          suggestionList.appendChild(row);
+        });
+        searchResultsBox.appendChild(suggestionList);
+      }
+    }
+  }
+
+  function exitSearchMode() {
+    if (searchInput) searchInput.value = '';
+    if (searchExitBtn) searchExitBtn.hidden = true;
+    const searchWrapper = document.getElementById('searchWrapper');
+    if (searchWrapper) searchWrapper.hidden = true;
+    if (searchResultsBox) {
+      searchResultsBox.hidden = true;
+      searchResultsBox.innerHTML = '';
+    }
+    document.querySelectorAll('.screen').forEach((s) => {
+      s.style.display = '';
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', handleSearchInput);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSearchInput();
+      }
+    });
+  }
+  if (searchSubmitBtn) searchSubmitBtn.addEventListener('click', handleSearchInput);
+  if (searchExitBtn) searchExitBtn.addEventListener('click', exitSearchMode);
+
+  function renderMoments() {
+    if (!momentStageBox) return;
+    const centerLabel = momentStageBox.querySelector('.stage-center-heart-wrap');
+    momentStageBox.innerHTML = '';
+    if (centerLabel) {
+      momentStageBox.appendChild(centerLabel);
+    } else {
+      const el = document.createElement('div');
+      el.id = 'stageSubText';
+      el.className = 'stage-center-heart-wrap';
+      el.setAttribute('aria-label', '探索您的生活篇章');
+      
+      el.innerHTML = `
+        <svg viewBox="0 0 200 200" class="stage-center-svg">
+          <defs>
+            <path id="textCirclePath" d="M 100,36 A 64,64 0 1,1 99.99,36 Z" />
+          </defs>
+          <g class="center-heart-pulse clickable-center-heart" id="clickableCenterHeart" role="button" aria-label="點擊釋放愛心">
+            <path d="M100,132 C100,132 64,106 64,84 C64,70 75,60 88,67 C93,70 100,78 100,78 C100,78 107,70 112,67 C125,60 136,70 136,84 C136,106 100,132 100,132 Z" 
+                  fill="#E65C7B" stroke="#FFF" stroke-width="2.5" filter="drop-shadow(0 6px 16px rgba(230, 92, 123, 0.28))" />
+          </g>
+          <g class="rotating-text-group">
+            <text font-size="10.5" font-weight="800" fill="#E65C7B" letter-spacing="2.2">
+              <textPath href="#textCirclePath" startOffset="0%" textLength="402" lengthAdjust="spacingAndGlyphs">
+                探索您的生活篇章 ✦ 探索您的生活篇章 ✦ 探索您的生活篇章 ✦ 探索您的生活篇章 ✦ 
+              </textPath>
+            </text>
+          </g>
+        </svg>
+      `;
+      momentStageBox.appendChild(el);
+
+      const clickableHeart = el.querySelector('#clickableCenterHeart');
+      if (clickableHeart) {
+        clickableHeart.addEventListener('click', triggerHeartShower);
+      }
+    }
+
+    const total = stages.length;
+    const radius = window.innerWidth <= 640 ? 125 : 220; // 微調手機端半徑使圓環更緊湊置中
+
+    stages.forEach((m, i) => {
+      const angle = (i * (360 / total)) - 90;
+      const rad = angle * (Math.PI / 180);
+      const x = Math.cos(rad) * radius;
+      const y = Math.sin(rad) * radius;
+
+      const ringNode = document.createElement('div');
+      ringNode.className = 'ring-node';
+      ringNode.style.setProperty('--x', `${x}px`);
+      ringNode.style.setProperty('--y', `${y}px`);
+      ringNode.style.setProperty('--idx', i);
+      ringNode.style.setProperty('--node-bg', m.bg);
+
+      const svgAnim = momentSvgAnimations[m.id] || momentSvgAnimations['stage_01'];
+      ringNode.innerHTML = `
+        <div class="ring-label-badge">
+          <span class="ring-node-title">${m.title}</span>
+        </div>
+        <div class="ring-node-inner">
+          <div class="ring-art-box">${svgAnim}</div>
+        </div>
+      `;
+
+      ringNode.addEventListener('click', () => {
+        SoundFX.playClick();
+        startStage(i);
+      });
+      momentStageBox.appendChild(ringNode);
+    });
+  }
+
+  function startStage(index) {
+    state.stageIndex = index;
+    state.stage = stages[index];
+    updateCategoryScreen();
+    showScreen('category');
+  }
+
+  function updateCategoryScreen() {
+    const subEl = document.getElementById('categoryStageSub');
+    const titleEl = document.getElementById('categoryStageTitle');
+    if (subEl) subEl.textContent = `STAGE 0${state.stageIndex + 1} ｜ ${state.stage.title}`;
+    if (titleEl) titleEl.textContent = `此刻的您最需要什麼支持？`;
+
+    const availableCategories = Object.keys(welfareData[state.stage.id] || {});
+
+    document.querySelectorAll('#categoryCircleGrid .category-circle-card').forEach((card) => {
+      const catKey = card.getAttribute('data-cat');
+      if (availableCategories.includes(catKey)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  document.querySelectorAll('.category-circle-card').forEach((card) => {
+    card.addEventListener('click', (e) => {
+      SoundFX.playClick();
+      const catKey = e.currentTarget.getAttribute('data-cat');
+      selectCategoryAndShowResult(catKey);
+    });
+  });
+
+  function selectCategoryAndShowResult(catKey) {
+    state.selectedCategory = catKey;
+    updateResultView(catKey);
+    showScreen('result');
+  }
+
+  function updateResultView(activeCat) {
+    const container = document.getElementById('resourceContainer');
+    const tabsEl = document.getElementById('newbieTabs');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const titleEl = document.getElementById('resultTitle');
+    if (titleEl) {
+      titleEl.textContent = `【${state.stage.title}】｜ ${catNames[activeCat] || '全部福祉項目'}`;
+    }
+
+    const descEl = document.getElementById('resultDesc');
+    if (descEl) {
+      descEl.textContent = catDescs[activeCat] || catDescs.all;
+    }
+    
+    const stageWelfares = welfareData[state.stage.id] || {};
+    const availableCategories = Object.keys(stageWelfares);
+
+    if (tabsEl) {
+      tabsEl.querySelectorAll('.newbie-tab').forEach((t) => {
+        const tabKey = t.getAttribute('data-tab');
+        t.classList.toggle('active', tabKey === activeCat);
+        if (tabKey !== 'all' && !availableCategories.includes(tabKey)) {
+          t.style.display = 'none';
+        } else {
+          t.style.display = 'inline-block';
+        }
+      });
+    }
+    
+    if (activeCat === 'all') {
+      let totalIdx = 1;
+      Object.keys(stageWelfares).forEach((catKey) => {
+        const catTitle = document.createElement('div');
+        catTitle.className = 'group-section-title';
+        catTitle.textContent = catNames[catKey];
+        container.appendChild(catTitle);
+
+        const list = document.createElement('div');
+        list.className = 'resource-list';
+        stageWelfares[catKey].forEach((item) => {
+          list.appendChild(createResourceElement(item, totalIdx++));
+        });
+        container.appendChild(list);
+      });
+    } else {
+      const items = stageWelfares[activeCat] || [];
+      const list = document.createElement('div');
+      list.className = 'resource-list';
+      items.forEach((item, i) => {
+        list.appendChild(createResourceElement(item, i + 1));
+      });
+      container.appendChild(list);
+    }
+  }
+
+  document.querySelectorAll('#newbieTabs .newbie-tab').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      SoundFX.playClick();
+      const tabCat = e.currentTarget.getAttribute('data-tab');
+      state.selectedCategory = tabCat;
+      updateResultView(tabCat);
+    });
+  });
+
+  function createResourceElement(item, num) {
+    const r = document.createElement('article');
+    r.className = 'resource';
+    r.innerHTML = `
+      <div class="resource-no">${num < 10 ? '0' + num : num}</div>
+      <div>
+        <span class="resource-tag">${item[0]}</span>
+        <h3>${item[1]}</h3>
+        <p>${item[2]}</p>
+      </div>
+      <button type="button">查看說明 →</button>`;
+    const btn = r.querySelector('button');
+    if (btn) btn.addEventListener('click', () => openModal(item));
+    return r;
+  }
+
+  function openModal(item) {
+    SoundFX.playDing();
+    const t = document.getElementById('modalTitle');
+    const txt = document.getElementById('modalText');
+    const note = document.getElementById('modalNote');
+    const backdrop = document.getElementById('modalBackdrop');
+    if (t) t.textContent = item[1];
+    if (txt) txt.innerHTML = `${item[2]}`;
+    if (note) note.innerHTML = `${item[3]}`;
+    if (backdrop) backdrop.classList.add('open');
+  }
+
+  const beginBtn = document.getElementById('beginBtn');
+  const homeBtn = document.getElementById('homeBtn');
+  const retryCatBtn = document.getElementById('retryCategoryBtn');
+  const otherMomBtn = document.getElementById('otherMomentBtn');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const modalBackdrop = document.getElementById('modalBackdrop');
+
+  if (beginBtn) beginBtn.addEventListener('click', () => {
+    SoundFX.playIntroMagic();
+    BGMPlayer.start();
+    showScreen('moments');
+  });
+  if (homeBtn) {
+    homeBtn.addEventListener('click', () => {
+      SoundFX.playClick();
+      state.history = [];
+      exitSearchMode();
+      showScreen('cover', false);
+    });
+  }
+  if (retryCatBtn) {
+    retryCatBtn.addEventListener('click', () => {
+      SoundFX.playClick();
+      showScreen('category');
+    });
+  }
+  if (otherMomBtn) {
+    otherMomBtn.addEventListener('click', () => {
+      SoundFX.playClick();
+      exitSearchMode();
+      showScreen('moments');
+    });
+  }
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
+      SoundFX.playClick();
+      if (modalBackdrop) modalBackdrop.classList.remove('open');
+    });
+  }
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target.id === 'modalBackdrop') {
+        e.currentTarget.classList.remove('open');
+      }
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    if (screens.moments && screens.moments.classList.contains('active')) {
+      renderMoments();
+    }
+  });
+
+  renderMoments();
+});
+</script>
+</body>
+</html>
