@@ -1198,27 +1198,36 @@
       margin-top: 24px;
     }
 
+    /* =========================================
+       ★ 針對手機版大幅優化的 CSS
+    ========================================= */
     @media (max-width: 640px) {
       .topbar {
         height: 52px;
-        padding: 0 6px 0 12px;
-        gap: 4px;
+        padding: 0 6px 0 10px;
+        gap: 6px;
       }
       .brand span {
         display: none;
       }
       .topbar-search {
-        margin: 0 4px;
-        max-width: 210px;
+        margin: 0 2px;
+        max-width: 160px;
       }
       .search-input {
-        height: 34px;
+        height: 32px;
         font-size: 13px;
         padding: 0 30px 0 12px;
       }
       .search-btn-action {
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
+        right: 4px;
+      }
+      .top-btn {
+        padding: 0 8px;
+        font-size: 12px;
+        height: 32px;
       }
       .cover-inner {
         padding-top: 100px;
@@ -1226,59 +1235,65 @@
       .moment-head {
         padding-top: 70px !important;
       }
-      /* 優化手機閱覽模式：階段介面水平與垂直置中 */
+      /* 優化手機閱覽模式：階段介面水平與垂直置中，縮小避免溢出螢幕 */
       .moment-stage {
         height: auto;
-        min-height: 380px;
+        min-height: 340px;
         aspect-ratio: 1 / 1;
         width: 100%;
-        max-width: 380px;
-        margin: 20px auto 30px !important;
+        max-width: 340px;
+        margin: 10px auto 30px !important;
         display: flex;
         align-items: center;
         justify-content: center;
       }
       .ring-node {
-        width: 110px !important;
-        height: 110px !important;
+        width: 85px !important;
+        height: 85px !important;
       }
       .ring-node-title {
-        font-size: 11px;
+        font-size: 11.5px;
       }
       .ring-label-badge {
-        top: -14px;
+        top: -12px;
         padding: 2px 10px;
       }
       .stage-center-heart-wrap {
-        width: 150px;
-        height: 150px;
+        width: 110px;
+        height: 110px;
       }
       .category-shell {
         padding-top: 90px;
       }
       
-      /* 優化手機閱覽模式：福利介面的圓圈一排一個 */
+      /* 優化手機閱覽模式：改為 2x2 網格，減少無限下拉的捲動疲勞 */
       .category-circle-grid {
-        flex-direction: column;
-        align-items: center;
-        gap: 28px;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 0 10px;
       }
       .category-circle-card {
-        width: 100%;
-        max-width: 220px;
+        width: calc(50% - 8px);
+        max-width: none;
       }
       .category-circle-media {
-        width: 180px;
-        height: 180px;
+        width: clamp(110px, 35vw, 140px);
+        height: clamp(110px, 35vw, 140px);
       }
       .category-circle-title {
-        font-size: 18px;
+        font-size: 16px;
       }
       
       .resource {
-        grid-template-columns: 46px 1fr;
-        gap: 14px;
-        padding: 20px;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 20px;
+      }
+      .resource-no {
+        width: 42px;
+        height: 42px;
       }
       .resource button {
         grid-column: 1 / -1;
@@ -1286,7 +1301,7 @@
       .hr-support-card {
         text-align: center;
         justify-content: center;
-        padding: 18px;
+        padding: 18px 14px;
       }
       .bgm-toggle-btn {
         right: 12px;
@@ -1295,10 +1310,27 @@
         padding: 0 12px;
         font-size: 12px;
       }
-      .top-btn {
-        padding: 0 8px;
-        font-size: 12px;
-        height: 32px;
+      .result-actions {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .secondary-btn {
+        width: 100%;
+      }
+      .modal {
+        padding: 24px 20px;
+        border-radius: 20px;
+      }
+      .modal h3 {
+        font-size: 20px;
+      }
+      .modal p {
+        font-size: 15px;
+        margin: 0 0 16px;
+      }
+      .modal-note {
+        font-size: 14px;
+        padding: 14px 16px;
       }
     }
 
@@ -1407,7 +1439,7 @@
       font-weight: 700;
       font-size: 13px;
       padding: 6px 16px;
-      border-radius: 999px;
+      border-radius: 99px;
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       cursor: pointer;
@@ -2466,7 +2498,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const total = stages.length;
-    const radius = window.innerWidth <= 640 ? 125 : 220; // 微調手機端半徑使圓環更緊湊置中
+    // ★ 修正點：自動適應手機螢幕尺寸的圓環半徑計算，避免超出螢幕
+    const radius = window.innerWidth <= 640 ? (window.innerWidth < 400 ? 110 : 130) : 220; 
 
     stages.forEach((m, i) => {
       const angle = (i * (360 / total)) - 90;
@@ -2823,7 +2856,6 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       const targetEl = step.getTarget();
       
-      // ★ 修正點：加入 || '' 空字串備案，避免顯示 undefined
       document.getElementById('spotlightTitle').textContent = step.title || '';
       document.getElementById('spotlightText').innerHTML = step.text || '';
 
