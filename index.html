@@ -714,8 +714,12 @@
 
     .ring-node {
       position: absolute;
+      top: 50%;
+      left: 50%;
       width: 150px !important;
       height: 150px !important;
+      margin-top: -75px;
+      margin-left: -75px;
       z-index: 15;
       cursor: pointer;
       will-change: transform, opacity;
@@ -1203,26 +1207,41 @@
     ========================================= */
     @media (max-width: 640px) {
       .topbar {
-        height: 52px;
-        padding: 0 6px 0 10px;
-        gap: 6px;
+        height: auto;
+        min-height: 52px;
+        padding: 8px 12px;
+        gap: 8px;
+        flex-wrap: wrap; 
+        border-radius: 20px;
+      }
+      .brand {
+        flex: 1; /* 推擠右方按鈕 */
       }
       .brand span {
         display: none;
       }
+      .top-actions {
+        flex: 0 0 auto;
+      }
+      /* 新增：將搜尋列變成下方滿版寬度 */
       .topbar-search {
-        margin: 0 2px;
-        max-width: 160px;
+        margin: 4px 0 0 0;
+        width: 100%;
+        max-width: 100%;
+        order: 3; /* 強制換行到下面 */
+        border-top: 1px dashed rgba(230, 92, 123, 0.2);
+        padding-top: 10px;
+        padding-bottom: 4px;
       }
       .search-input {
-        height: 32px;
-        font-size: 13px;
-        padding: 0 30px 0 12px;
+        height: 38px;
+        font-size: 14px;
+        padding: 0 40px 0 16px;
       }
       .search-btn-action {
-        width: 24px;
-        height: 24px;
-        right: 4px;
+        width: 30px;
+        height: 30px;
+        right: 6px;
       }
       .top-btn {
         padding: 0 8px;
@@ -1233,8 +1252,9 @@
         padding-top: 100px;
       }
       .moment-head {
-        padding-top: 70px !important;
+        padding-top: 80px !important;
       }
+      
       /* 優化手機閱覽模式：階段介面水平與垂直置中，縮小避免溢出螢幕 */
       .moment-stage {
         height: auto;
@@ -1242,7 +1262,7 @@
         aspect-ratio: 1 / 1;
         width: 100%;
         max-width: 340px;
-        margin: 10px auto 30px !important;
+        margin: 40px auto 30px !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1250,6 +1270,8 @@
       .ring-node {
         width: 85px !important;
         height: 85px !important;
+        margin-top: -42.5px; /* 修正絕對置中錯誤 */
+        margin-left: -42.5px;
       }
       .ring-node-title {
         font-size: 11.5px;
@@ -1262,27 +1284,32 @@
         width: 110px;
         height: 110px;
       }
+      
+      /* 調整展開搜尋列時的防遮擋間距 */
       .category-shell {
-        padding-top: 90px;
+        padding-top: 140px; 
+      }
+      .result-inner {
+        padding-top: 130px;
       }
       
-      /* 優化手機閱覽模式：改為 2x2 網格，減少無限下拉的捲動疲勞 */
+      /* 優化手機閱覽模式：還原為一排一個大圓圈 */
       .category-circle-grid {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 16px;
-        padding: 0 10px;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+        padding: 0;
       }
       .category-circle-card {
-        width: calc(50% - 8px);
-        max-width: none;
+        width: 100%;
+        max-width: 220px;
       }
       .category-circle-media {
-        width: clamp(110px, 35vw, 140px);
-        height: clamp(110px, 35vw, 140px);
+        width: 180px;
+        height: 180px;
       }
       .category-circle-title {
-        font-size: 16px;
+        font-size: 18px;
       }
       
       .resource {
@@ -2107,7 +2134,7 @@ window.addEventListener('DOMContentLoaded', () => {
     },
     'stage_03': {
       health: [
-        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
+        ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康状况，及早預防疾病，守護身心健康'],
         ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
         ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
         ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
@@ -2498,7 +2525,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const total = stages.length;
-    // ★ 修正點：自動適應手機螢幕尺寸的圓環半徑計算，避免超出螢幕
+    // ★ 適應手機螢幕尺寸的圓環半徑計算，避免超出螢幕邊界
     const radius = window.innerWidth <= 640 ? (window.innerWidth < 400 ? 110 : 130) : 220; 
 
     stages.forEach((m, i) => {
@@ -2761,41 +2788,40 @@ window.addEventListener('DOMContentLoaded', () => {
   function initTourSteps() {
     const ringNodes = document.querySelectorAll('.ring-node');
     
-    // 依序為：0(啟程成長)、1(幸福同行)、2(守護家庭)、3(好好照顧自己)、4(迎向精彩下一站)、5(愛與責任的延續)
+    // ★ 修正：將目標精準抓取為 .ring-node-inner，避免被文字框偏移影響
     tourSteps = [
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 0 ? ringNodes[0] : null,
+        getTarget: () => ringNodes.length > 0 ? ringNodes[0].querySelector('.ring-node-inner') : null,
         title: "【啟程成長】", text: "【全方位福利導航】", shape: 'circle', pos: 'right'
       },
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 1 ? ringNodes[1] : null, 
-        title: "【幸福同行】", text: "【結婚相關福利與補助】", shape: 'circle', pos: 'right' // 固定右邊
+        getTarget: () => ringNodes.length > 1 ? ringNodes[1].querySelector('.ring-node-inner') : null, 
+        title: "【幸福同行】", text: "【結婚相關福利與補助】", shape: 'circle', pos: 'right'
       },
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 2 ? ringNodes[2] : null, 
-        title: "【守護家庭】", text: "生育托兒與家庭照顧", shape: 'circle', pos: 'right' // 固定右邊
+        getTarget: () => ringNodes.length > 2 ? ringNodes[2].querySelector('.ring-node-inner') : null, 
+        title: "【守護家庭】", text: "生育托兒與家庭照顧", shape: 'circle', pos: 'right'
       },
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 3 ? ringNodes[3] : null,
+        getTarget: () => ringNodes.length > 3 ? ringNodes[3].querySelector('.ring-node-inner') : null,
         title: "【好好照顧自己】", text: "健康檢查與身心照護", shape: 'circle', pos: 'left'
       },
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 4 ? ringNodes[4] : null, 
+        getTarget: () => ringNodes.length > 4 ? ringNodes[4].querySelector('.ring-node-inner') : null, 
         title: "【迎向精彩下一站】", text: "退休規劃與未來準備", shape: 'circle', pos: 'left'
       },
       {
         setup: () => simulateScreen('moments'),
-        getTarget: () => ringNodes.length > 5 ? ringNodes[5] : null, 
-        title: "【愛與責任的延續】", text: "身故撫卹與喪葬關懷", shape: 'circle', pos: 'left'
+        getTarget: () => ringNodes.length > 5 ? ringNodes[5].querySelector('.ring-node-inner') : null, 
+        title: "【愛與責任的延續】", text: "急難醫療救助與喪葬關懷", shape: 'circle', pos: 'left'
       },
-      // 跨頁面：福利類別 (精準對焦圓形圖片區)
       {
-        snap: true, // 標記為跨頁切換，關閉轉場動畫直接到位
+        snap: true, 
         setup: () => {
           simulateScreen('category');
           state.stageIndex = 0; state.stage = stages[0]; updateCategoryScreen();
@@ -2803,7 +2829,6 @@ window.addEventListener('DOMContentLoaded', () => {
         getTarget: () => document.querySelector('.category-circle-media'),
         title: "【選擇最符合您現在需要的支持】", shape: 'circle', pos: 'top'
       },
-      // 跨頁面：福利清單 (強制置頂說明)
       {
         snap: true,
         setup: () => {
@@ -2813,7 +2838,6 @@ window.addEventListener('DOMContentLoaded', () => {
         getTarget: () => document.querySelector('.resource'),
         title: "【選擇您想了解的福利】", shape: 'rect', padding: 8, pos: 'top'
       },
-      // 跨頁面：查看說明按鈕 (強制置頂說明)
       {
         snap: true,
         setup: () => {
@@ -2823,7 +2847,6 @@ window.addEventListener('DOMContentLoaded', () => {
         getTarget: () => document.querySelector('.resource button'),
         title: "【點擊說明查看福利細節】", shape: 'rect', padding: 8, pos: 'top'
       },
-      // 跨頁面：福利說明視窗 (強制置頂說明，並分離小提示到下方)
       {
         snap: true,
         setup: () => {
