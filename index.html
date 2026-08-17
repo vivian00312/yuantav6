@@ -1201,8 +1201,8 @@
     @media (max-width: 640px) {
       .topbar {
         height: 52px;
-        padding: 0 8px 0 12px;
-        gap: 6px;
+        padding: 0 6px 0 12px;
+        gap: 4px;
       }
       .brand span {
         display: none;
@@ -1295,6 +1295,160 @@
         padding: 0 12px;
         font-size: 12px;
       }
+      .top-btn {
+        padding: 0 8px;
+        font-size: 12px;
+        height: 32px;
+      }
+    }
+
+    /* =========================================
+       ★ 新增：頁面聚光燈導覽 (無框版) 樣式
+    ========================================= */
+    /* 鎖定畫面捲動，防止遮罩與元素脫離 */
+    body.tour-active, 
+    body.tour-active .app,
+    body.tour-active .screen.active {
+      overflow: hidden !important;
+      touch-action: none !important;
+    }
+
+    .spotlight-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      pointer-events: auto; /* 阻擋背後元素被點擊 */
+    }
+    .spotlight-overlay.active {
+      display: block;
+      animation: fadeInSoft 0.4s ease forwards;
+    }
+    @keyframes fadeInSoft {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* 粉色聚光燈遮罩 (再調淡一點：0.55) */
+    .spotlight-hole {
+      position: fixed;
+      background: transparent;
+      box-shadow: 0 0 0 9999px rgba(255, 192, 203, 0.55); 
+      pointer-events: none;
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 10000;
+    }
+    
+    /* 純文字說明區域 */
+    .spotlight-text-container {
+      position: fixed;
+      z-index: 10001;
+      color: #fff;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 4px 24px rgba(0, 0, 0, 0.4);
+      width: max-content;
+      max-width: min(calc(100vw - 40px), 340px);
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+    .spotlight-overlay.active .spotlight-text-container {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .spotlight-text-container h3 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+    .spotlight-text-container p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    /* 獨立提示區域 (放置於元素下方) */
+    .spotlight-hint-container {
+      position: fixed;
+      z-index: 10001;
+      color: #FFE066;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      width: max-content;
+      max-width: min(calc(100vw - 40px), 340px);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.6;
+      text-align: center;
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      pointer-events: none;
+    }
+    .spotlight-overlay.active .spotlight-hint-container.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    /* 頂部跳過按鈕 (置中) */
+    .spotlight-btn-skip {
+      position: fixed;
+      top: max(20px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10002;
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: #1A365D;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .spotlight-btn-skip:hover {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* 底部獨立按鈕 (左下、右下) */
+    .spotlight-btn-prev, .spotlight-btn-next {
+      position: fixed;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      z-index: 10002;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 10px 24px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s;
+      cursor: pointer;
+      white-space: nowrap; /* 防止按鈕文字換行 */
+    }
+    .spotlight-btn-prev {
+      left: 20px;
+      background: #fff;
+      color: var(--accent-warm);
+      border: none;
+    }
+    .spotlight-btn-prev:hover {
+      background: #FFF0F4;
+    }
+    .spotlight-btn-next {
+      right: 20px;
+      background: var(--accent-warm);
+      color: #fff;
+      border: 2px solid #fff;
+    }
+    .spotlight-btn-next:hover {
+      background: #DF4B6D;
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -1331,7 +1485,9 @@
       <button class="search-exit-btn" id="searchExitBtn" type="button" hidden>返回</button>
     </div>
 
+    <!-- ★ 右上方加入隨時教學的按鈕 -->
     <div class="top-actions">
+      <button class="top-btn" id="topTutorialBtn" type="button" aria-label="新手導覽">💡 教學</button>
       <button class="top-btn" id="backBtn" type="button" aria-label="回上一頁" disabled>← 上一步</button>
       <button class="top-btn" id="homeBtn" type="button" aria-label="回到首頁">回首頁</button>
     </div>
@@ -1369,8 +1525,9 @@
             </svg>
           </div>
 
+          <!-- 首頁拿掉導覽按鈕，只留開始探索 -->
           <button class="primary-btn" id="beginBtn" type="button">開始探索 →</button>
-          <div class="cover-note">簡單選擇・幫你聚焦生活核心需要</div>
+          <div class="cover-note" style="margin-top: 18px;">簡單選擇・幫你聚焦生活核心需要</div>
         </div>
       </div>
     </section>
@@ -1480,6 +1637,25 @@
       <div class="modal-actions"><button class="secondary-btn" id="closeModalBtn" type="button">我知道了，謝謝</button></div>
     </div>
   </div>
+
+  <!-- ★ 新增：頁面聚光燈導覽 (Spotlight Tour) 2.0 無框純字版 -->
+  <div class="spotlight-overlay" id="spotlightOverlay">
+    <div class="spotlight-hole" id="spotlightHole"></div>
+    
+    <!-- 主說明文字容器 -->
+    <div class="spotlight-text-container" id="spotlightTextContainer">
+      <h3 id="spotlightTitle"></h3>
+      <p id="spotlightText"></p>
+    </div>
+
+    <!-- 小提示容器 (分離顯示) -->
+    <div class="spotlight-hint-container" id="spotlightHintContainer"></div>
+
+    <button class="spotlight-btn-skip" id="spotlightSkipBtn">跳過教學</button>
+    <button class="spotlight-btn-prev" id="spotlightPrevBtn">上一步</button>
+    <button class="spotlight-btn-next" id="spotlightNextBtn">下一步</button>
+  </div>
+
 </div>
 
 <script>
@@ -1908,6 +2084,13 @@ window.addEventListener('DOMContentLoaded', () => {
         ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：<br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br>職工本人進修就讀教育主管機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
         ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
         ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      career: [
+        ['職涯成長', '元大e學苑', '學習沒有終點，成長持續發生','提供數位學習平台與豐富課程資源，協助員工隨時隨地自主學習，持續提升專業能力與競爭力'],
+        ['職涯成長', '全方位教育訓練', '陪伴您持續精進專業與領導能力','提供新人訓練、專業課程、管理職培訓及領導力發展課程，打造完整學習藍圖，支持不同職涯階段的人才發展需求'],
+        ['職涯成長', '語言與金融證照獎勵', '讓每一次進步都獲得肯定','取得指定語言或金融專業證照，可申請檢定補助與獎勵金，鼓勵持續精進專業能力與國際競爭力'],
+        ['職涯成長', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['職涯成長', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：<br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br>職工本人進修就讀教育主管機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。']
       ]
     },
     'stage_03': {
@@ -1922,7 +2105,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ],
       family: [
         ['家庭生活', '生育補助', '迎接新生命的喜悅，元大陪您一起準備','職工本人或配偶生育時，可申請新台幣15000元生育補助；若夫妻雙方皆為元大員工，雙方皆可申請。另享團體保險生育保險金5000元，女性同仁每胎最高可獲20000元補助，陪伴您安心迎接家庭新成員'],
-        ['家庭生活', '安胎休養假', '讓準媽媽能安心養胎，專心照顧自己','懷孕員工如有安胎需求，可依規定申請安胎休養假，減輕孕期壓力與身體負擔，讓準媽媽能安心調養身心，迎接新生命的到來'],
+        ['家庭生活', '安胎休養假', '讓準媽媽能安心養胎，專心照顧自己','懷孕員工如有安胎需求，可依規定申請安胎休養假，減輕孕期壓力與身體負擔，讓準妈妈能安心調養身心，迎接新生命的到來'],
         ['家庭生活', '產假', '給自己更多恢復時間，也給寶寶更多陪伴','提供十周產假，優於法令規定，協助同仁兼顧產後身體恢復與新生兒照顧需求，從容迎接人生的重要新篇章'],
         ['家庭生活', '流產假', '在人生需要被照顧的時刻，提供溫暖支持','妊娠未滿2個月流產提供7日支薪假；妊娠2個月以上未滿3個月流產提供9日支薪假，協助同仁安心休養，照顧身心健康'],
         ['家庭生活', '產檢假', '重要的每一次檢查，都值得被充分支持','提供8日產檢假，讓準媽媽能安心完成孕期各項檢查，守護自己與寶寶的健康'],
@@ -1955,13 +2138,20 @@ window.addEventListener('DOMContentLoaded', () => {
         ['財務未來', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：<br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br>職工本人進修就讀教育主管機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。'],
         ['財務未來', '喪葬補助金', '陪伴您度過傷痛時刻，給您最溫暖的支持','職工本人死亡補助喪葬費新台幣50000元，職工配偶死亡補助新台幣10000元，父母、子女死亡補助新台幣2000元。夫妻雙方或兄弟姐妹或父母子女同在本公司服務者以一人申請為限。'],
         ['財務未來', '生日禮金', '公司誠摯祝福您生日快樂','職工本人生日禮金補助新台幣1000元']
+      ],
+      career: [
+        ['職涯成長', '元大e學苑', '學習沒有終點，成長持續發生','提供數位學習平台與豐富課程資源，協助員工隨時隨地自主學習，持續提升專業能力與競爭力'],
+        ['職涯成長', '全方位教育訓練', '陪伴您持續精進專業與領導能力','提供新人訓練、專業課程、管理職培訓及領導力發展課程，打造完整學習藍圖，支持不同職涯階段的人才發展需求'],
+        ['職涯成長', '語言與金融證照獎勵', '讓每一次進步都獲得肯定','取得指定語言或金融專業證照，可申請檢定補助與獎勵金，鼓勵持續精進專業能力與國際競爭力'],
+        ['職涯成長', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
+        ['職涯成長', '職工子女獎學金', '肯定孩子的卓越表現','職工子女獎學金支給暨補助標準如下：<br>大學院校學業成績平均60分以上，操行成績乙等或70分以上金額3000元。<br>五專四、五年級、二專學業成績平均60分以上，操行成績乙等或70分以上金額2500元<br>高中職（含五專一至三年級）學業成績平均60分以上金額2000元。<br>國中學業成績平均乙等或60分以上金額1500元。<br>小學學業成績平均乙等或60分以上金額1000元。<br>申請期間上學期：二月至四月，下學期：八月至十月。<br>職工本人及配偶同在本公司服務並均符合資格者，皆可申請。<br>職工本人進修就讀教育主管機關立案之學校者，其學業及操行成績達本會職工子女獎學金支給標準者，得申請獎學金。']
       ]
     },
     'stage_04': {
       health: [
         ['健康身心', '年度健康檢查', '健康是幸福生活最重要的基礎', '每年一次提供優於法令規定之健康檢查，協助員工掌握健康狀況，及早預防疾病，守護身心健康'],
         ['健康身心', '醫師臨場服務', '專業健康諮詢就在身邊','提供醫師健康諮詢與健康管理建議，協助員工建立良好健康習慣，提升整體健康品質'],
-        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持續晤談，需採自費方式進行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顧能力'],
+        ['健康身心', '員工協助方案（EAPs）', '當生活遇到壓力時，您不必獨自面對', '提供心理、情緒、家庭、法律、財務、人際關係及工作適應等專業諮詢服務，包括電話諮詢、電子郵件諮詢及一對一心理諮商，每人每年最高使用六次專業心理諮詢服務，全程保密且免費<br>・專線號碼：0800-299-988<br>・接聽時間為每週一至週五（假日除外）上午 10:00 至晚間 10:00<br>・每通電話諮詢時間為 20 至 25 分鐘，不限次數<br>・電子信箱：toptipeap@gmail.com<br>・通訊地址：台北市羅斯福路二段 2 號 4 樓，黃暐超心理師收<br>・電子郵件於 48 小時內回覆（遇假日順延）<br>・實體郵件遞送往返時間另計，不限次數<br>・每人每年最高六次晤談，額度用罄後如遇持续晤談，需採自費方式进行<br><br>另定期提供職場健康相關文章，協助同仁提升心理健康與自我照顾能力'],
         ['健康身心', '母性健康保護計劃', '從懷孕到產後，提供全程照護支持','規劃完善母性健康保護措施，提供軟硬體照護資源及健康關懷服務，陪伴同仁安心度過孕產歷程'],
         ['健康身心', '友善職場講座', '給自己更多成長與照顧的機會','定期舉辦健康促進、運動保健、家庭溝通、生涯規劃等多元主題講座，打造全方位友善職場環境'],
         ['健康身心', '年度休假', '適時休息，也是持續前進重要的力量','本公司制定《出勤暨請假管理要點》，規範員工年度休假、各類假別給假日數及工資給付規定，包括特別休假、普通傷病假等制度，協助同仁兼顧工作與生活平衡'],
@@ -2084,6 +2274,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // ★ 宣告首頁載入時的狀態變數，確保導覽只有按開始探索時會跳出
+  let hasSeenTourThisSession = false;
+
   function showScreen(name, recordHistory = true, pushBrowserState = true) {
     exitSearchMode();
     if (recordHistory) {
@@ -2101,6 +2294,13 @@ window.addEventListener('DOMContentLoaded', () => {
     if (screens[name]) {
       screens[name].classList.add('active');
     }
+
+    // ★ 如果是進入階段頁，且此 session 尚未看過教學，則觸發
+    if (name === 'moments' && !hasSeenTourThisSession) {
+      hasSeenTourThisSession = true; 
+      setTimeout(startTour, 1200);
+    }
+
     updateTopbarSearchVisibility(name);
     updateBackBtn();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2535,6 +2735,283 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   renderMoments();
+
+  // =========================================================
+  // ★ 新增：手動叫出導覽教學 邏輯
+  // =========================================================
+  function forceStartTour() {
+    if (SoundFX) SoundFX.playIntroMagic();
+    if (!BGMPlayer.isPlaying && !BGMPlayer.isMuted) BGMPlayer.start();
+    
+    hasSeenTourThisSession = true; // 防止自動觸發衝突
+    showScreen('moments', false, false);
+    
+    // 確保滾動到頂部與動畫同步
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(startTour, 800);
+  }
+
+  const topTutorialBtn = document.getElementById('topTutorialBtn');
+  if (topTutorialBtn) topTutorialBtn.addEventListener('click', forceStartTour);
+
+  // =========================================================
+  // ★ 新增：跨頁面連續聚光燈導覽 邏輯
+  // =========================================================
+  let tourCurrentStep = 0;
+  let tourSteps = [];
+
+  const overlay = document.getElementById('spotlightOverlay');
+  const hole = document.getElementById('spotlightHole');
+  const textCont = document.getElementById('spotlightTextContainer');
+  const hintCont = document.getElementById('spotlightHintContainer');
+  
+  // 模擬切換畫面 (不影響真實瀏覽器歷史紀錄，專供導覽使用)
+  function simulateScreen(screenName) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = '');
+    Object.values(screens).forEach(s => { if (s) s.classList.remove('active'); });
+    if (screens[screenName]) screens[screenName].classList.add('active');
+    const mb = document.getElementById('modalBackdrop');
+    if (mb) mb.classList.remove('open');
+  }
+
+  function initTourSteps() {
+    const ringNodes = document.querySelectorAll('.ring-node');
+    
+    // 依序為：0(啟程成長)、1(幸福同行)、2(守護家庭)、3(好好照顧自己)、4(迎向精彩下一站)、5(愛與責任的延續)
+    tourSteps = [
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 0 ? ringNodes[0] : null,
+        title: "【啟程成長】", text: "【全方位福利導航】", shape: 'circle', pos: 'right'
+      },
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 1 ? ringNodes[1] : null, 
+        title: "【幸福同行】", text: "【結婚相關福利與補助】", shape: 'circle', pos: 'right' // 固定右邊
+      },
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 2 ? ringNodes[2] : null, 
+        title: "【守護家庭】", text: "生育托兒與家庭照顧", shape: 'circle', pos: 'right' // 固定右邊
+      },
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 3 ? ringNodes[3] : null,
+        title: "【好好照顧自己】", text: "健康檢查與身心照護", shape: 'circle', pos: 'left'
+      },
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 4 ? ringNodes[4] : null, 
+        title: "【迎向精彩下一站】", text: "退休規劃與未來準備", shape: 'circle', pos: 'left'
+      },
+      {
+        setup: () => simulateScreen('moments'),
+        getTarget: () => ringNodes.length > 5 ? ringNodes[5] : null, 
+        title: "【愛與責任的延續】", text: "身故撫卹與喪葬關懷", shape: 'circle', pos: 'left'
+      },
+      // 跨頁面：福利類別 (精準對焦圓形圖片區)
+      {
+        snap: true, // 標記為跨頁切換，關閉轉場動畫直接到位
+        setup: () => {
+          simulateScreen('category');
+          state.stageIndex = 0; state.stage = stages[0]; updateCategoryScreen();
+        },
+        getTarget: () => document.querySelector('.category-circle-media'),
+        title: "【選擇最符合您現在需要的支持】", shape: 'circle', pos: 'top'
+      },
+      // 跨頁面：福利清單 (強制置頂說明)
+      {
+        snap: true,
+        setup: () => {
+          simulateScreen('result');
+          state.stageIndex = 0; state.stage = stages[0]; state.selectedCategory = 'all'; updateResultView('all');
+        },
+        getTarget: () => document.querySelector('.resource'),
+        title: "【選擇您想了解的福利】", shape: 'rect', padding: 8, pos: 'top'
+      },
+      // 跨頁面：查看說明按鈕 (強制置頂說明)
+      {
+        snap: true,
+        setup: () => {
+          simulateScreen('result');
+          state.stageIndex = 0; state.stage = stages[0]; state.selectedCategory = 'all'; updateResultView('all');
+        },
+        getTarget: () => document.querySelector('.resource button'),
+        title: "【點擊說明查看福利細節】", shape: 'rect', padding: 8, pos: 'top'
+      },
+      // 跨頁面：福利說明視窗 (強制置頂說明，並分離小提示到下方)
+      {
+        snap: true,
+        setup: () => {
+          simulateScreen('result');
+          state.stageIndex = 0; state.stage = stages[0]; state.selectedCategory = 'all'; updateResultView('all');
+          openModal(welfareData['stage_01']['health'][0]);
+        },
+        getTarget: () => document.querySelector('.modal'),
+        title: "【了解公司福利】", 
+        hint: "💡 小提示：回到階段頁面後，試著點擊畫面中間的「愛心」，會有驚喜喔！",
+        shape: 'rect', padding: 12, pos: 'top'
+      }
+    ];
+  }
+
+  function executeStep() {
+    const step = tourSteps[tourCurrentStep];
+    
+    // 如果有跨頁標記，先將遮罩與文字隱藏並關閉轉場動畫，避免出現奇怪的殘影變形
+    if (step.snap) {
+      hole.style.transition = 'none';
+      hole.style.opacity = '0';
+      textCont.style.opacity = '0';
+      hintCont.style.opacity = '0';
+      hintCont.classList.remove('active');
+    }
+
+    if (step.setup) step.setup(); 
+    
+    setTimeout(() => {
+      const targetEl = step.getTarget();
+      
+      // ★ 修正點：加入 || '' 空字串備案，避免顯示 undefined
+      document.getElementById('spotlightTitle').textContent = step.title || '';
+      document.getElementById('spotlightText').innerHTML = step.text || '';
+
+      // 處理小提示內容
+      if (step.hint) {
+        hintCont.innerHTML = step.hint;
+        hintCont.classList.add('active');
+      } else {
+        hintCont.classList.remove('active');
+      }
+
+      const prevBtn = document.getElementById('spotlightPrevBtn');
+      const nextBtn = document.getElementById('spotlightNextBtn');
+      prevBtn.style.visibility = tourCurrentStep === 0 ? 'hidden' : 'visible';
+      nextBtn.textContent = tourCurrentStep === tourSteps.length - 1 ? '我了解了，回到階段頁面' : '下一步';
+
+      if (targetEl) {
+        const rect = targetEl.getBoundingClientRect();
+        const pad = step.padding || 10;
+        
+        if (step.snap) hole.style.transition = 'none';
+        
+        hole.style.width = `${rect.width + pad * 2}px`;
+        hole.style.height = `${rect.height + pad * 2}px`;
+        hole.style.top = `${rect.top - pad}px`;
+        hole.style.left = `${rect.left - pad}px`;
+        hole.style.borderRadius = step.shape === 'circle' ? '50%' : '16px';
+
+        let textTop = 0;
+        let textLeft = 0;
+        const textRect = textCont.getBoundingClientRect();
+        const margin = 20;
+
+        // 無論電腦或手機，設定 pos: 'top' 就是絕對在上方
+        if (step.pos === 'top') {
+          textTop = rect.top - pad - textRect.height - margin;
+          textLeft = rect.left + (rect.width / 2) - (textRect.width / 2);
+          textCont.style.textAlign = 'center';
+        } else {
+          // 其他位置的預設處理
+          if (window.innerWidth <= 640) {
+            textLeft = (window.innerWidth - textRect.width) / 2;
+            textCont.style.textAlign = 'center';
+            if (rect.bottom + textRect.height + margin < window.innerHeight - 80) {
+              textTop = rect.bottom + pad + margin;
+            } else {
+              textTop = rect.top - pad - textRect.height - margin;
+            }
+          } else {
+            textCont.style.textAlign = 'left';
+            if (step.pos === 'bottom') {
+              textTop = rect.bottom + pad + margin;
+              textLeft = rect.left + (rect.width / 2) - (textRect.width / 2);
+              textCont.style.textAlign = 'center';
+            } else if (step.pos === 'right') {
+              textTop = rect.top + (rect.height / 2) - (textRect.height / 2);
+              textLeft = rect.right + pad + margin;
+              if (textLeft + textRect.width > window.innerWidth - 10) textLeft = rect.left - pad - textRect.width - margin; 
+            } else if (step.pos === 'left') {
+              textTop = rect.top + (rect.height / 2) - (textRect.height / 2);
+              textLeft = rect.left - pad - textRect.width - margin;
+              if (textLeft < 10) textLeft = rect.right + pad + margin;
+            }
+          }
+        }
+
+        // 強制鎖定上下界線，確保主文字不超出螢幕
+        textTop = Math.max(60, Math.min(textTop, window.innerHeight - textRect.height - 80));
+        textLeft = Math.max(10, Math.min(textLeft, window.innerWidth - textRect.width - 10));
+
+        textCont.style.top = `${textTop}px`;
+        textCont.style.left = `${textLeft}px`;
+
+        // 獨立處理小提示位置 (固定放在下方)
+        if (step.hint) {
+          const hintRect = hintCont.getBoundingClientRect();
+          let hintTop = rect.bottom + pad + 15;
+          // 改為相對於螢幕絕對置中，避免跟隨目標偏離與窄螢幕溢出
+          let hintLeft = (window.innerWidth - hintRect.width) / 2;
+          
+          hintTop = Math.min(hintTop, window.innerHeight - hintRect.height - 80);
+          
+          hintCont.style.top = `${hintTop}px`;
+          hintCont.style.left = `${hintLeft}px`;
+          if (step.snap) hintCont.style.transition = 'none';
+        }
+
+        if (step.snap) {
+          void hole.offsetWidth; // 強制重繪
+          hole.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+          hole.style.opacity = '1';
+          textCont.style.opacity = '1';
+          if (step.hint) hintCont.style.opacity = '1';
+        }
+      }
+    }, 350); 
+  }
+
+  function startTour() {
+    initTourSteps();
+    tourCurrentStep = 0;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    if (SoundFX) SoundFX.playDing();
+    executeStep(); 
+  }
+
+  function closeTour() {
+    if (SoundFX) SoundFX.playClick();
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('modalBackdrop').classList.remove('open');
+    
+    // 結束後回歸正常階段
+    showScreen('moments', false, false);
+    renderMoments();
+  }
+
+  document.getElementById('spotlightNextBtn').addEventListener('click', () => {
+    if (SoundFX) SoundFX.playClick();
+    if (tourCurrentStep < tourSteps.length - 1) {
+      tourCurrentStep++;
+      executeStep();
+    } else {
+      closeTour();
+    }
+  });
+  
+  document.getElementById('spotlightPrevBtn').addEventListener('click', () => {
+    if (SoundFX) SoundFX.playClick();
+    if (tourCurrentStep > 0) {
+      tourCurrentStep--;
+      executeStep();
+    }
+  });
+  
+  document.getElementById('spotlightSkipBtn').addEventListener('click', closeTour);
+
 });
 </script>
 </body>
